@@ -44,55 +44,113 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             
-            <h2 class="text-4xl font-black italic uppercase mb-8 tracking-tighter text-ludo-azul-dark">Instrucciones del Juego</h2>
-            
-            <div class="space-y-8 text-slate-600">
+            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-ludo-cian mb-2">Colección Grandes Líderes · Ludolab</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-2 tracking-tight text-ludo-azul-dark">Instrucciones del Juego</h2>
+            <p class="text-slate-500 text-sm mb-8">Mujeres que Cambiaron el Mundo</p>
+
+            <div class="grid grid-cols-3 gap-3 mb-8 text-center">
+                <div class="bg-ludo-gris rounded-2xl p-4">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Jugadores</p>
+                    <p class="text-lg font-extrabold text-ludo-azul">2 a 5</p>
+                    <p class="text-[10px] text-slate-400 mt-1">(ideal 3–4)</p>
+                </div>
+                <div class="bg-ludo-gris rounded-2xl p-4">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Duración</p>
+                    <p class="text-lg font-extrabold text-ludo-azul">25–35 min</p>
+                </div>
+                <div class="bg-ludo-gris rounded-2xl p-4">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Mazo</p>
+                    <p class="text-lg font-extrabold text-ludo-azul">60 + 10</p>
+                    <p class="text-[10px] text-slate-400 mt-1">cartas + trucos</p>
+                </div>
+            </div>
+
+            <div class="space-y-7 text-slate-600 text-sm">
                 <section>
-                    <h4 class="font-bold text-ludo-azul uppercase text-xs tracking-[0.2em] mb-3">Objetivo</h4>
-                    <p class="leading-relaxed">Demostrar conocimiento sobre la historia y logros de estas mujeres para ser el jugador con más cartas ganadas al final de la partida.</p>
+                    <h4 class="font-bold text-ludo-azul uppercase text-xs tracking-[0.2em] mb-2">Objetivo</h4>
+                    <p class="leading-relaxed">Ser el jugador con más cartas ganadas al final de la partida, demostrando conocimiento sobre la historia y los logros de estas mujeres.</p>
                 </section>
 
                 <section>
-                    <h4 class="font-bold text-ludo-azul uppercase text-xs tracking-[0.2em] mb-3">Cómo se juega</h4>
-                    <p class="mb-4">En cada turno, el jugador saca una carta y debe intentar decir correctamente en voz alta:</p>
-                    <ul class="space-y-2 border-l-2 border-slate-100 pl-4 text-sm font-medium">
-                        <li>• País de origen</li>
-                        <li>• Profesión o Área</li>
-                        <li>• Hito o Logro Principal</li>
+                    <h4 class="font-bold text-ludo-azul uppercase text-xs tracking-[0.2em] mb-2">Preparación</h4>
+                    <ol class="space-y-1 pl-5 list-decimal">
+                        <li>Barajar todas las cartas (personajes + especiales).</li>
+                        <li>Colocar el mazo boca abajo al centro y dejar un espacio al lado para el pozo.</li>
+                        <li>Elegir al jugador inicial (por ejemplo, el que haya leído un libro más recientemente).</li>
+                    </ol>
+                </section>
+
+                <section>
+                    <h4 class="font-bold text-ludo-azul uppercase text-xs tracking-[0.2em] mb-2">Cómo se juega</h4>
+                    <p class="mb-3">En cada turno, el jugador saca <b>1 carta</b>, la da vuelta para que todos la vean y debe decir correctamente en voz alta:</p>
+                    <ul class="space-y-2 border-l-2 border-ludo-cian/40 pl-4 font-medium">
+                        <li>País de origen</li>
+                        <li>Profesión o Área</li>
+                        <li>Hito o Logro Principal</li>
                     </ul>
                 </section>
 
-                <section class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    <h4 class="font-bold text-slate-900 uppercase text-xs tracking-[0.2em] mb-4 text-center">Resultados del Turno</h4>
-                    <div class="grid grid-cols-1 gap-4 text-sm">
-                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
-                            <span class="font-bold text-slate-700">3 respuestas correctas</span>
-                            <span class="text-ludo-azul font-medium">Ganas carta + Turno extra</span>
+                <section class="bg-ludo-gris p-6 rounded-2xl">
+                    <h4 class="font-bold text-ludo-azul-dark uppercase text-xs tracking-[0.2em] mb-4 text-center">Resultados del turno</h4>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between items-start gap-4 border-b border-white pb-2">
+                            <span class="font-bold text-slate-700 shrink-0">3 correctas</span>
+                            <span class="text-ludo-azul font-medium text-right">Gana carta + juega otro turno</span>
                         </div>
-                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
-                            <span class="font-bold text-slate-700">2 respuestas correctas</span>
-                            <span class="text-ludo-azul font-medium">Ganas carta</span>
+                        <div class="flex justify-between items-start gap-4 border-b border-white pb-2">
+                            <span class="font-bold text-slate-700 shrink-0">2 correctas</span>
+                            <span class="text-ludo-azul font-medium text-right">Gana carta, termina turno</span>
                         </div>
-                        <div class="flex justify-between items-center italic">
-                            <span class="text-slate-500">0-1 respuestas</span>
-                            <span class="text-slate-400 font-medium">La carta va al pozo</span>
+                        <div class="border-b border-white pb-2">
+                            <div class="flex justify-between items-start gap-4 mb-1">
+                                <span class="font-bold text-slate-700 shrink-0">1 correcta</span>
+                                <span class="text-slate-500 font-medium text-right">Elige una opción:</span>
+                            </div>
+                            <ul class="pl-4 text-xs space-y-1 text-slate-500">
+                                <li><b class="text-slate-700">Segura:</b> la carta va al pozo y termina el turno.</li>
+                                <li><b class="text-amber-700">Riesgo:</b> intenta uno de los datos fallados. Si acierta se queda con la carta; si falla, al pozo y pierde el próximo turno.</li>
+                            </ul>
+                        </div>
+                        <div class="flex justify-between items-start gap-4 italic">
+                            <span class="text-slate-500 shrink-0">0 correctas</span>
+                            <span class="text-slate-400 font-medium text-right">La carta va al pozo</span>
                         </div>
                     </div>
                 </section>
 
                 <section>
                     <h4 class="font-bold text-ludo-azul uppercase text-xs tracking-[0.2em] mb-3">Cartas de Truco (10 especiales)</h4>
-                    <ul class="space-y-3 text-sm">
+                    <p class="text-xs text-slate-500 mb-3">Al sacarse, su efecto se activa de inmediato.</p>
+                    <ul class="space-y-3">
                         <li><span class="inline-block text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-full border bg-rose-50 text-rose-700 border-rose-100 mr-2">Censura ×3</span>El siguiente jugador pierde su turno.</li>
                         <li><span class="inline-block text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-full border bg-amber-50 text-amber-700 border-amber-100 mr-2">Exilio ×3</span>Eliges a un oponente: debe devolver 1 carta ganada al pozo.</li>
                         <li><span class="inline-block text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-100 mr-2">Inspiración ×2</span>Sacas otra carta y juegas un turno inmediato.</li>
-                        <li><span class="inline-block text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-full border bg-sky-50 text-sky-700 border-sky-100 mr-2">Intercambio ×2</span>Intercambias una carta ganada por 2 del pozo.</li>
+                        <li><span class="inline-block text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-full border bg-sky-50 text-sky-700 border-sky-100 mr-2">Intercambio ×2</span>Intercambias una carta ganada por 2 del pozo (si hay).</li>
                     </ul>
-                    <p class="text-xs italic text-slate-500 mt-4">Los efectos de las cartas de truco se aplican de inmediato: no hay preguntas ni desafíos.</p>
+                </section>
+
+                <section>
+                    <h4 class="font-bold text-ludo-azul uppercase text-xs tracking-[0.2em] mb-2">Regla del pozo</h4>
+                    <p>Todas las cartas no ganadas o descartadas por efectos especiales van al pozo.</p>
+                </section>
+
+                <section class="bg-ludo-cian/10 border border-ludo-cian/30 p-5 rounded-2xl">
+                    <h4 class="font-bold text-ludo-azul-dark uppercase text-xs tracking-[0.2em] mb-2">Regla opcional: Desafío Histórico</h4>
+                    <p class="text-xs leading-relaxed">Antes de aplicar el efecto de una carta de truco, un jugador puede nombrar correctamente el <b>Hito Principal</b> de una carta del pozo. Si acierta, recupera esa carta. <i>(Regla del juego físico; no implementada en la versión digital.)</i></p>
+                </section>
+
+                <section>
+                    <h4 class="font-bold text-ludo-azul uppercase text-xs tracking-[0.2em] mb-2">Fin del juego</h4>
+                    <p>El juego termina cuando se acaba el mazo principal. Gana quien haya acumulado más cartas.</p>
+                </section>
+
+                <section>
+                    <h4 class="font-bold text-ludo-azul uppercase text-xs tracking-[0.2em] mb-2">Modo Individual (práctica)</h4>
+                    <p class="text-xs">Se juega solo con las 60 cartas de mujeres, <b>sin cartas de truco</b>, para estudiar y mejorar el conocimiento personal.</p>
                 </section>
             </div>
 
-            <button onclick="toggleModal()" class="mt-10 w-full bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+            <button onclick="toggleModal()" class="mt-10 w-full bg-ludo-azul hover:bg-ludo-azul-dark text-white font-semibold py-3 px-6 rounded-full text-sm transition-colors">
                 Cerrar y volver al mazo
             </button>
         </div>
@@ -107,21 +165,23 @@
     </div>
 
     <div class="max-w-[1400px] mx-auto p-6 md:p-12">
-        <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-                <h1 class="text-6xl font-black italic tracking-tighter uppercase text-slate-950"></h1>
-                <p class="text-slate-400 text-lg font-medium"></p>
-            </div>
-            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                <div class="relative w-full sm:w-80">
-                    <input type="text" id="searchInput" oninput="filtrarBusqueda()"
-                        placeholder="Buscar por nombre o país..."
-                        class="w-full bg-white border border-slate-200 rounded-2xl py-4 px-6 shadow-sm focus:ring-2 focus:ring-ludo-azul outline-none text-slate-800 font-bold transition-all">
-                </div>
+        <header class="mb-14 flex flex-col items-center gap-6 text-center">
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-ludo-azul-dark">Mujeres que Cambiaron el Mundo</h1>
+            <p class="text-slate-500 text-sm md:text-base font-medium max-w-xl">Colección Grandes Líderes · Un juego de Ludolab para aprender jugando.</p>
+            <div class="flex flex-col sm:flex-row items-center gap-3 mt-2">
                 <a href="juego.html"
-                   class="shrink-0 inline-flex items-center justify-center bg-ludo-azul hover:bg-ludo-azul-dark text-white font-semibold py-3 px-6 rounded-full text-sm transition-colors whitespace-nowrap shadow-md shadow-ludo-azul/20">
+                   class="inline-flex items-center justify-center bg-ludo-azul hover:bg-ludo-azul-dark text-white font-semibold py-3 px-8 rounded-full text-sm transition-colors whitespace-nowrap shadow-md shadow-ludo-azul/20">
                     A jugar
                 </a>
+                <button onclick="toggleModal()"
+                    class="inline-flex items-center justify-center bg-white border border-ludo-azul/30 hover:border-ludo-azul text-ludo-azul font-semibold py-3 px-6 rounded-full text-sm transition-colors whitespace-nowrap">
+                    Cómo se juega
+                </button>
+            </div>
+            <div class="relative w-full max-w-md mt-2">
+                <input type="text" id="searchInput" oninput="filtrarBusqueda()"
+                    placeholder="Buscar por nombre o país..."
+                    class="w-full bg-white border border-slate-200 rounded-full py-3 px-6 shadow-sm focus:ring-2 focus:ring-ludo-azul focus:border-ludo-azul outline-none text-slate-800 font-medium transition-all">
             </div>
         </header>
 
