@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+
+# Firebase cache local
+.firebase/
+
+# Office temp files
+~$*
+
+# Node / build artefacts (por si algún día)
+node_modules/
+dist/
+
+# Carpetas de trabajo que NO son parte del sitio publicado
+/Scripts_Generacion_Tarjetas/
+/mujeres-cambiaron-mundo-web/
+/mujeres-frontend/
+/.mujeres-frontend-failed-*/
+/rename-tool/
+/triptico_ludolab/
+
+# Fuentes de datos (no deployables)
+/*.xlsx
+/*.docx

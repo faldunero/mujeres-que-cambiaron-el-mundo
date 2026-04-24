@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Personal - Mujeres Bacanas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        /* Diseño sin bordes usando solo sutiles cambios de fondo */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900 antialiased font-['Inter']">
+
+   <div id="app" class="max-w-6xl mx-auto p-6 md:p-12">
+    <nav class="mb-12">
+        <a href="index.html" class="group inline-flex items-center text-slate-400 hover:text-indigo-600 transition-all">
+            <svg class="w-6 h-6 mr-2 transform group-hover:-translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            <span class="font-black tracking-widest uppercase text-xs">Volver al Mazo</span>
+        </a>
+    </nav>
+
+    <div id="content" class="flex flex-col lg:flex-row gap-12 lg:items-start opacity-0 transition-opacity duration-500">
+        <div class="w-full max-w-sm mx-auto lg:w-5/12">
+            <div class="relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
+                <img id="detail-image" src="" alt="" class="relative rounded-[2rem] shadow-2xl w-full h-auto object-cover aspect-[2/3] border border-slate-100">
+            </div>
+        </div>
+
+        <div class="w-full lg:w-7/12 space-y-10">
+            <header>
+                <h1 id="nombre" class="text-6xl md:text-7xl font-black text-slate-900 italic tracking-tighter leading-none mb-4 uppercase">---</h1>
+                <div class="inline-block px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-600 font-black tracking-widest text-[10px] uppercase border border-indigo-100">
+                    <span id="profesion">---</span>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-50 border border-slate-100 p-6 rounded-2xl shadow-sm">
+                    <span class="block text-[10px] text-slate-400 uppercase font-black tracking-widest mb-2">País de origen</span>
+                    <span id="pais" class="text-xl font-bold text-slate-800">---</span>
+                </div>
+                <div class="bg-slate-50 border border-slate-100 p-6 rounded-2xl shadow-sm">
+                    <span class="block text-[10px] text-slate-400 uppercase font-black tracking-widest mb-2">Continente</span>
+                    <span id="continente" class="text-xl font-bold text-indigo-600">---</span>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-indigo-500 text-[10px] font-black uppercase tracking-[0.3em] mb-4 pb-1">Hito o Razón de Fama</h3>
+                <p id="fama" class="text-3xl font-light text-slate-800 leading-tight italic">---</p>
+            </div>
+
+           <div class="pt-2">
+                <h3 class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-4">Reseña Biográfica</h3>
+                <p id="bio" class="text-slate-700 leading-relaxed text-lg font-medium italic">---</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        // Array parcial para prueba. Deberás completar los 60 con los datos de tu Excel.
+        const mazo = [
+            { id: "ID_01_carta_gabriela_mistral", nombre: "Gabriela Mistral", prof: "Poeta y Educadora", pais: "Chile", cont: "América", fama: "Primera latinoamericana en ganar el Nobel de Literatura (1945).", bio: "Nacida como Lucila Godoy Alcayaga, fue una voz universal. Pedagoga visionaria que trabajó en reformas educacionales en México y representó a Chile como cónsul." },
+            { id: "ID_02_carta_violeta_parra", nombre: "Violeta Parra", prof: "Cantautora y Artista", pais: "Chile", cont: "América", fama: "Madre de la Nueva Canción Chilena y primera latina en el Louvre.", bio: "Artista autodidacta que rescató la tradición campesina chilena a través de la música, la pintura y sus famosas arpilleras." },
+            { id: "ID_03_carta_michelle_bachelet", nombre: "Michelle Bachelet", prof: "Médica y Política", pais: "Chile", cont: "América", fama: "Primera mujer presidenta de Chile y Alta Comisionada de la ONU.", bio: "Lideró Chile en dos periodos (2006 y 2014). Su carrera destaca por su enfoque en protección social, derechos humanos y equidad de género." },
+            { id: "ID_04_carta_eloisa_diaz", nombre: "Eloísa Díaz", prof: "Médica", pais: "Chile", cont: "América", fama: "Primera mujer médica de Chile y América del Sur.", bio: "Desafió las normas del siglo XIX para titularse en medicina. Fue pionera en higiene escolar y una figura clave en la salud pública." },
+            { id: "ID_05_carta_isabel_allende", nombre: "Isabel Allende", prof: "Escritora", pais: "Chile", cont: "América", fama: "La escritora viva en lengua española más leída del mundo.", bio: "Autora de 'La Casa de los Espíritus'. Ha vendido más de 75 millones de libros, mezclando historia con realismo mágico." },
+            { id: "ID_06_carta_gladys_marin", nombre: "Gladys Marín", prof: "Política", pais: "Chile", cont: "América", fama: "Líder histórica del Partido Comunista y defensora de los DD.HH.", bio: "Figura emblemática de la resistencia política en Chile y la lucha por la justicia social durante décadas." },
+            { id: "ID_07_carta_elena_caffarena", nombre: "Elena Caffarena", prof: "Abogada y Feminista", pais: "Chile", cont: "América", fama: "Impulsora del voto femenino en Chile.", bio: "Jurista que dedicó su vida a la defensa de los derechos civiles y políticos de las mujeres en el siglo XX." },
+            { id: "ID_08_carta_christiane_endler", nombre: "Christiane Endler", prof: "Futbolista", pais: "Chile", cont: "América", fama: "Mejor portera del mundo (The Best 2021).", bio: "Capitana de la selección chilena, ganadora de la Champions League y referente global del fútbol femenino." },
+            { id: "ID_09_carta_marlene_ahrens", nombre: "Marlene Ahrens", prof: "Atleta", pais: "Chile", cont: "América", fama: "Única chilena con medalla olímpica (Plata, 1956).", bio: "Destacó en el lanzamiento de jabalina. Fue una de las deportistas más versátiles de la historia de Chile." },
+            { id: "ID_10_carta_maria_teresa_ruiz", nombre: "María Teresa Ruiz", prof: "Astrónoma", pais: "Chile", cont: "América", fama: "Descubridora de la primera enana café.", bio: "Primera mujer en recibir el Premio Nacional de Ciencias Exactas por sus aportes al estudio de las estrellas." },
+            { id: "ID_11_carta_anita_lizana", nombre: "Anita Lizana", prof: "Tenista", pais: "Chile", cont: "América", fama: "Primera latina en ser N°1 del mundo (1937).", bio: "Ganadora del US Open, fue la primera gran estrella del deporte chileno a nivel internacional." },
+            { id: "ID_12_carta_javiera_carrera", nombre: "Javiera Carrera", prof: "Patriota", pais: "Chile", cont: "América", fama: "Madre de la Patria Chilena.", bio: "Figura fundamental en la independencia, cosió la primera bandera y organizó la logística de la resistencia." },
+            { id: "ID_13_carta_marcela_paz", nombre: "Marcela Paz", prof: "Escritora", pais: "Chile", cont: "América", fama: "Creadora de 'Papelucho'.", bio: "Premio Nacional de Literatura, capturó la esencia de la infancia chilena a través de su personaje más famoso." },
+            { id: "ID_14_carta_mon_laferte", nombre: "Mon Laferte", prof: "Cantautora", pais: "Chile", cont: "América", fama: "La chilena con más nominaciones y premios Latin Grammy.", bio: "Artista multidisciplinaria que ha llevado la música popular chilena a los escenarios más grandes del mundo." },
+            { id: "ID_15_carta_ines_de_suarez", nombre: "Inés de Suárez", prof: "Conquistadora", pais: "España / Chile", cont: "Europa", fama: "Fundadora de Santiago de Chile.", bio: "Única mujer en la expedición de Pedro de Valdivia, jugó un rol militar decisivo en la defensa de la ciudad." },
+            { id: "ID_16_carta_margot_loyola", nombre: "Margot Loyola", prof: "Folclorista", pais: "Chile", cont: "América", fama: "Investigadora esencial del folclore chileno.", bio: "Recorrió el país rescatando danzas y canciones tradicionales, siendo un pilar de la cultura popular." },
+            { id: "ID_17_carta_cecilia_pantoja", nombre: "Cecilia Pantoja", prof: "Cantante", pais: "Chile", cont: "América", fama: "La incomparable figura de la Nueva Ola.", bio: "Revolucionó la música y la puesta en escena con su estilo rebelde y una voz única en la historia de Chile." },
+            { id: "ID_18_carta_francisca_crovetto", nombre: "Francisca Crovetto", prof: "Tiradora", pais: "Chile", cont: "América", fama: "Medallista de Oro Olímpica (París 2024).", bio: "Especialista en tiro skeet, se convirtió en la primera mujer chilena en subir a lo más alto del podio olímpico." },
+            { id: "ID_19_carta_paz_errazuriz", nombre: "Paz Errázuriz", prof: "Fotógrafa", pais: "Chile", cont: "América", fama: "Documentalista de los márgenes sociales.", bio: "Premio Nacional de Artes Plásticas, capturó la vida de comunidades invisibilizadas con una mirada humana y cruda." },
+            { id: "ID_20_carta_justicia_espada", nombre: "Justicia Espada", prof: "Ingeniera", pais: "Chile", cont: "América", fama: "Primera mujer ingeniera civil en Chile y Sudamérica (1919).", bio: "Rompió barreras de género en la construcción y el cálculo estructural, abriendo camino a miles de mujeres en STEM." },
+            { id: "ID_21_carta_marta_brunet", nombre: "Marta Brunet", prof: "Escritora", pais: "Chile", cont: "América", fama: "Segunda mujer en ganar el Premio Nacional de Literatura.", bio: "Su obra exploró la realidad del campo y la condición de la mujer con una profundidad psicológica adelantada a su tiempo." },
+            { id: "ID_22_carta_amanda_labarca", nombre: "Amanda Labarca", prof: "Educadora y Feminista", pais: "Chile", cont: "América", fama: "Pionera en la educación universitaria femenina.", bio: "Primera mujer académica en la Universidad de Chile, luchó por el sufragio y la educación laica." },
+            { id: "ID_23_carta_lenka_franulic", nombre: "Lenka Franulic", prof: "Periodista", pais: "Chile", cont: "América", fama: "Primera mujer en recibir el Premio Nacional de Periodismo.", bio: "Maestra de la entrevista y el reportaje, fue la primera mujer en dirigir una radio en Chile." },
+            { id: "ID_24_carta_matilde_perez", nombre: "Matilde Pérez", prof: "Artista Visual", pais: "Chile", cont: "América", fama: "Pionera del arte cinético en Chile.", bio: "Exploró el movimiento y la percepción visual a través del uso de la geometría y la tecnología en sus obras." },
+            { id: "ID_25_carta_eliana_busch", nombre: "Eliana Busch", prof: "Nadadora", pais: "Chile", cont: "América", fama: "Multicampeona mundial de natación Master.", bio: "A sus más de 80 años, sigue batiendo récords mundiales, demostrando que la pasión por el deporte no tiene edad." },
+            { id: "ID_26_carta_sola_sierra", nombre: "Sola Sierra", prof: "Activista", pais: "Chile", cont: "América", fama: "Líder de la Agrupación de Familiares de Detenidos Desaparecidos.", bio: "Símbolo de la lucha por la verdad y la justicia en Chile, dedicó su vida a la defensa de los derechos humanos." },
+            { id: "ID_27_carta_diamela_eltit", nombre: "Diamela Eltit", prof: "Escritora", pais: "Chile", cont: "América", fama: "Referente de la literatura de vanguardia y Premio Nacional.", bio: "Su escritura desafiante analiza el cuerpo, el poder y la resistencia social desde la experimentación literaria." },
+            { id: "ID_28_carta_adriana_valdes", nombre: "Adriana Valdés", prof: "Ensayista", pais: "Chile", cont: "América", fama: "Primera mujer directora de la Academia Chilena de la Lengua.", bio: "Crítica literaria de gran prestigio, ha impulsado el pensamiento intelectual y la cultura en Chile." },
+            { id: "ID_29_carta_rosario_orrego", nombre: "Rosario Orrego", prof: "Escritora", pais: "Chile", cont: "América", fama: "Primera mujer periodista y novelista de Chile.", bio: "Pionera de las letras en el siglo XIX, fundó revistas y abrió el espacio público para la voz femenina." },
+            { id: "ID_30_carta_barbara_riveros", nombre: "Bárbara Riveros", prof: "Triatleta", pais: "Chile", cont: "América", fama: "La mejor triatleta en la historia de Chile.", bio: "Campeona mundial y múltiple medallista panamericana, referente de esfuerzo y disciplina en el deporte de élite." },
+            { id: "ID_31_carta_frida_kahlo", nombre: "Frida Kahlo", prof: "Pintora", pais: "México", cont: "América", fama: "Icono mundial del arte y el feminismo.", bio: "Sus autorretratos exploraron el dolor, la identidad y la cultura mexicana, convirtiéndola en una figura legendaria." },
+            { id: "ID_32_carta_eva_peron", nombre: "Eva Perón", prof: "Política", pais: "Argentina", cont: "América", fama: "Símbolo de la justicia social y el voto femenino en Argentina.", bio: "Como primera dama, impulsó derechos laborales y sociales, convirtiéndose en 'la abanderada de los humildes'." },
+            { id: "ID_33_carta_rigoberta_menchu", nombre: "Rigoberta Menchú", prof: "Activista", pais: "Guatemala", cont: "América", fama: "Premio Nobel de la Paz (1992).", bio: "Líder indígena defensora de los derechos humanos y la reconciliación étnica en su país y el mundo." },
+            { id: "ID_34_carta_mercedes_sosa", nombre: "Mercedes Sosa", prof: "Cantante", pais: "Argentina", cont: "América", fama: "La voz de América Latina.", bio: "Fundadora del Movimiento del Nuevo Cancionero, llevó el folclore y el mensaje social por todo el planeta." },
+            { id: "ID_35_carta_sor_juana_ines_de_la_cruz", nombre: "Sor Juana Inés de la Cruz", prof: "Escritora", pais: "México", cont: "América", fama: "La Décima Musa.", bio: "Pionera del feminismo en la época colonial, fue una de las poetas y pensadoras más brillantes del Siglo de Oro." },
+            { id: "ID_36_carta_celia_cruz", nombre: "Celia Cruz", prof: "Cantante", pais: "Cuba", cont: "América", fama: "La Reina de la Salsa.", bio: "Con su grito de '¡Azúcar!', llevó los ritmos caribeños al mundo entero y ganó múltiples premios Grammy." },
+            { id: "ID_37_carta_manuela_saenz", nombre: "Manuela Sáenz", prof: "Patriota", pais: "Ecuador", cont: "América", fama: "La Libertadora del Libertador.", bio: "Coronela del ejército grancolombiano, participó activamente en las batallas por la independencia de América del Sur." },
+            { id: "ID_38_carta_juana_azurduy", nombre: "Juana Azurduy", prof: "Militar", pais: "Bolivia", cont: "América", fama: "Heroína de la independencia hispanoamericana.", bio: "Lideró tropas de guerrillas contra el imperio español, siendo reconocida por su valentía en el campo de batalla." },
+            { id: "ID_39_carta_carmen_miranda", nombre: "Carmen Miranda", prof: "Artista", pais: "Brasil", cont: "América", fama: "Símbolo de la cultura brasileña en Hollywood.", bio: "Cantante de samba y actriz, fue la mujer mejor pagada de EE.UU. en los años 40 con su icónico estilo tropical." },
+            { id: "ID_40_carta_maria_felix", nombre: "María Félix", prof: "Actriz", pais: "México", cont: "América", fama: "La gran diva del cine de oro mexicano.", bio: "Conocida como 'La Doña', representó a la mujer fuerte y empoderada, convirtiéndose en un mito de la elegancia." },
+            { id: "ID_41_carta_alfonsina_storni", nombre: "Alfonsina Storni", prof: "Poeta", pais: "Argentina", cont: "América", fama: "Voz fundamental de la poesía modernista latinoamericana.", bio: "Sus versos desafiaron los roles de género y exploraron la psicología femenina con una audacia única." },
+            { id: "ID_42_carta_berta_caceres", nombre: "Berta Cáceres", prof: "Activista", pais: "Honduras", cont: "América", fama: "Defensora del medio ambiente y los pueblos indígenas.", bio: "Luchó contra proyectos hidroeléctricos que amenazaban territorios ancestrales, recibiendo el prestigioso Premio Goldman." },
+            { id: "ID_43_carta_carolina_herrera", nombre: "Carolina Herrera", prof: "Diseñadora", pais: "Venezuela", cont: "América", fama: "Icono global de la moda y la elegancia.", bio: "Fundó su propia casa de moda en Nueva York, convirtiéndose en una de las diseñadoras más influyentes del mundo." },
+            { id: "ID_44_carta_ellen_ochoa", nombre: "Ellen Ochoa", prof: "Astronauta", pais: "EE.UU. / México", cont: "América", fama: "Primera mujer hispana en viajar al espacio.", bio: "Ingeniera y veterana de cuatro misiones espaciales, llegó a ser directora del Centro Espacial Johnson de la NASA." },
+            { id: "ID_45_carta_gilda", nombre: "Gilda", prof: "Cantante", pais: "Argentina", cont: "América", fama: "Icono de la música popular y santa popular.", bio: "Revolucionó la cumbia argentina con letras emotivas, convirtiéndose en un fenómeno cultural tras su trágica muerte." },
+            { id: "ID_46_carta_marie_curie", nombre: "Marie Curie", prof: "Científica", pais: "Polonia / Francia", cont: "Europa", fama: "Primera persona en ganar dos premios Nobel.", bio: "Descubridora del radio y el polonio, sus investigaciones sobre la radiactividad cambiaron la medicina y la física." },
+            { id: "ID_47_carta_malala_yousafzai", nombre: "Malala Yousafzai", prof: "Activista", pais: "Pakistán", cont: "Asia", fama: "Premio Nobel de la Paz más joven de la historia.", bio: "Sobrevivió a un atentado por defender el derecho de las niñas a la educación, convirtiéndose en una líder global." },
+            { id: "ID_48_carta_cleopatra_vii", nombre: "Cleopatra VII", prof: "Faraona", pais: "Egipto", cont: "África", fama: "Última gobernante de la dinastía ptolemaica.", bio: "Diplomática, políglota y estratega, es una de las mujeres más poderosas y fascinantes de la historia antigua." },
+            { id: "ID_49_carta_juana_de_arco", nombre: "Juana de Arco", prof: "Militar", pais: "Francia", cont: "Europa", fama: "Heroína nacional y santa de Francia.", bio: "Campesina que lideró al ejército francés en la Guerra de los Cien Años, inspirando a toda una nación." },
+            { id: "ID_50_carta_ada_lovelace", nombre: "Ada Lovelace", prof: "Matemática", pais: "Reino Unido", cont: "Europa", fama: "La primera programadora de la historia.", bio: "Escribió el primer algoritmo destinado a ser procesado por una máquina, visionando el futuro de la informática." },
+            { id: "ID_51_carta_rosa_parks", nombre: "Rosa Parks", prof: "Activista", pais: "EE.UU.", cont: "América", fama: "Madre del movimiento por los derechos civiles.", bio: "Su negativa a ceder su asiento en un autobús desencadenó una lucha histórica contra la segregación racial." },
+            { id: "ID_52_carta_valentina_tereshkova", nombre: "Valentina Tereshkova", prof: "Cosmonauta", pais: "Rusia", cont: "Europa", fama: "Primera mujer en viajar al espacio.", bio: "A bordo de la Vostok 6 en 1963, orbitó la Tierra 48 veces, marcando un hito en la carrera espacial." },
+            { id: "ID_53_carta_anne_frank", nombre: "Anne Frank", prof: "Diariaista", pais: "Alemania / Holanda", cont: "Europa", fama: "Autora del diario más leído sobre el Holocausto.", bio: "Su testimonio íntimo desde el escondite se convirtió en un símbolo mundial de esperanza y denuncia contra la barbarie." },
+            { id: "ID_54_carta_virginia_woolf", nombre: "Virginia Woolf", prof: "Escritora", pais: "Reino Unido", cont: "Europa", fama: "Pionera del modernismo literario y el feminismo.", bio: "Autora de 'Una habitación propia', renovó la narrativa con su técnica del flujo de conciencia." },
+            { id: "ID_55_carta_simone_de_beauvoir", nombre: "Simone de Beauvoir", prof: "Filósofa", pais: "Francia", cont: "Europa", fama: "Autora de 'El segundo sexo'.", bio: "Figura clave del existencialismo, sus teorías sobre la construcción social de la mujer fundaron el feminismo moderno." },
+            { id: "ID_56_carta_margaret_thatcher", nombre: "Margaret Thatcher", prof: "Política", pais: "Reino Unido", cont: "Europa", fama: "La Dama de Hierro.", bio: "Primera mujer en ser Primera Ministra del Reino Unido, transformando la economía y política de su país." },
+            { id: "ID_57_carta_indira_gandhi", nombre: "Indira Gandhi", prof: "Política", pais: "India", cont: "Asia", fama: "Primera mujer Primera Ministra de la India.", bio: "Líder central en una de las democracias más grandes del mundo, gobernó durante periodos cruciales de su historia." },
+            { id: "ID_58_carta_amelia_earhart", nombre: "Amelia Earhart", prof: "Aviadora", pais: "EE.UU.", cont: "América", fama: "Primera mujer en cruzar el Atlántico en solitario.", bio: "Rompió récords de velocidad y distancia, inspirando a las mujeres a perseguir carreras en la aviación." },
+            { id: "ID_59_carta_florence_nightingale", nombre: "Florence Nightingale", prof: "Enfermera", pais: "Reino Unido", cont: "Europa", fama: "Fundadora de la enfermería moderna.", bio: "Sus métodos estadísticos y de higiene durante la Guerra de Crimea salvaron miles de vidas y profesionalizaron la salud." },
+            { id: "ID_60_carta_hedy_lamarr", nombre: "Hedy Lamarr", prof: "Actriz e Inventora", pais: "Austria / EE.UU.", cont: "Europa", fama: "Inventora de la base del Wi-Fi y Bluetooth.", bio: "Estrella de Hollywood que patentó un sistema de comunicaciones secreto que es el pilar de nuestras redes inalámbricas actuales." }
+        ];
+
+        function init() {
+            const params = new URLSearchParams(window.location.search);
+            const idBuscado = params.get('id');
+            const data = mazo.find(m => m.id === idBuscado);
+
+            if (data) {
+                document.getElementById('detail-image').src = "Set_Completo_60_Tarjetas_Mujeres/" + data.id + ".png";
+                document.getElementById('nombre').innerText = data.nombre;
+                document.getElementById('profesion').innerText = data.prof;
+                document.getElementById('pais').innerText = data.pais;
+                document.getElementById('continente').innerText = data.cont;
+                document.getElementById('fama').innerText = data.fama;
+                document.getElementById('bio').innerText = data.bio;
+                document.getElementById('content').classList.remove('opacity-0');
+                document.title = data.nombre + " - Ficha Bacana";
+            } else if (idBuscado) {
+                document.getElementById('detail-image').src = "Set_Completo_60_Tarjetas_Mujeres/" + idBuscado + ".png";
+                document.getElementById('nombre').innerText = "Cargando...";
+                document.getElementById('content').classList.remove('opacity-0');
+            }
+        }
+        window.onload = init;
+
+        function init() {
+            const params = new URLSearchParams(window.location.search);
+            const idBuscado = params.get('id');
+            const data = mazo.find(m => m.id === idBuscado);
+
+            if (data) {
+                document.getElementById('detail-image').src = "Set_Completo_60_Tarjetas_Mujeres/" + data.id + ".png";
+                document.getElementById('nombre').innerText = data.nombre;
+                document.getElementById('profesion').innerText = data.prof;
+                document.getElementById('pais').innerText = data.pais;
+                document.getElementById('continente').innerText = data.cont;
+                document.getElementById('fama').innerText = data.fama;
+                document.getElementById('bio').innerText = data.bio;
+                document.getElementById('content').classList.remove('opacity-0');
+            } else if (idBuscado) {
+                // Fallback para IDs no definidos en el array de arriba
+                document.getElementById('detail-image').src = "Set_Completo_60_Tarjetas_Mujeres/" + idBuscado + ".png";
+                document.getElementById('nombre').innerText = idBuscado.split('_').slice(3).join(' ').toUpperCase().replace(/_/g, ' ');
+                document.getElementById('content').classList.remove('opacity-0');
+            }
+        }
+        window.onload = init;
+    </script>
+</body>
+</html>

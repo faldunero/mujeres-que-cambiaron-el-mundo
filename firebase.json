@@ -1,0 +1,35 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "Scripts_Generacion_Tarjetas/**",
+      "mujeres-cambiaron-mundo-web/**",
+      "mujeres-frontend/**",
+      "rename-tool/**",
+      "triptico_ludolab/**",
+      "*.xlsx",
+      "*.docx",
+      "~$*",
+      "deploy.sh",
+      "README.md",
+      "vercel.json"
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(png|jpg|jpeg|svg|webp)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      },
+      {
+        "source": "**/*.html",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        ]
+      }
+    ]
+  }
+}
