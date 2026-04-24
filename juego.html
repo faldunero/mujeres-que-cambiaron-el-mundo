@@ -117,12 +117,15 @@
             <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 mb-6 shadow-sm">
                 <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
                     <div>
-                        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Turno actual</p>
+                        <div class="flex items-center gap-2 mb-1">
+                            <p id="turno-etiqueta" class="text-xs text-slate-400 font-medium uppercase tracking-wider">Turno actual</p>
+                            <span id="fase-badge" class="hidden text-[10px] font-black uppercase tracking-widest text-white px-2 py-0.5 rounded-full" style="background-color:#43C6AC">Fase pozo</span>
+                        </div>
                         <h2 id="turno-nombre" class="text-3xl font-black italic uppercase tracking-tighter text-slate-950">---</h2>
                     </div>
                     <div class="flex items-center gap-3">
                         <div class="text-right">
-                            <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Mazo</p>
+                            <p id="mazo-etiqueta" class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Mazo</p>
                             <p id="mazo-count" class="text-2xl font-black tabular-nums text-slate-800">--</p>
                         </div>
                         <button onclick="verCartasPozo()" class="flex flex-col items-end bg-white border border-slate-200 hover:border-ludo-azul rounded-2xl px-4 py-2 transition-colors" title="Ver cartas del pozo">
@@ -198,6 +201,7 @@
         pozo: [],               // cartas descartadas
         cartaActual: null,      // carta en juego
         skipNext: false,        // flag Censura
+        fasePozo: false,        // true cuando se agotó el mazo original y se juega con el pozo
         mujeresData: [],
         trucosData: []
     };
@@ -296,6 +300,43 @@
         state.turnoActual = 0;
         state.cartaActual = null;
         state.skipNext = false;
+        state.fasePozo = false;
+    }
+
+    function iniciarFasePozo() {
+        const mujeresEnPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
+        // Las cartas de truco que quedaron en el pozo se descartan permanentemente.
+        state.fasePozo = true;
+        state.mazo = shuffle(mujeresEnPozo);
+        state.pozo = [];
+        state.cartaActual = null;
+        state.preguntasEstado = null;
+        state.skipNext = false;
+        // Limpiar skipSiguiente de todos los jugadores: la fase pozo arranca limpia
+        state.jugadores.forEach(j => { j.skipSiguiente = false; });
+
+        document.getElementById('turno-nombre').innerText = state.jugadores[state.turnoActual].nombre;
+        actualizarContadores();
+        renderScoreBoard();
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="text-center py-12 fade-in">
+                <p class="text-xs font-medium uppercase tracking-wider mb-3" style="color:#43C6AC">¡Se acabó el mazo!</p>
+                <h3 class="text-3xl md:text-4xl font-black italic uppercase tracking-tighter mb-4 text-slate-950">Fase del pozo</h3>
+                <p class="text-slate-600 font-medium mb-2 max-w-md mx-auto">Las <b>${state.mazo.length} carta${state.mazo.length === 1 ? '' : 's'}</b> que quedaron en el pozo entran a un nuevo mazo. Las cartas de truco no participan en esta fase.</p>
+                <div class="bg-ludo-gris rounded-2xl p-5 max-w-md mx-auto my-6 text-left">
+                    <p class="text-xs font-bold text-ludo-azul uppercase tracking-widest mb-2">Reglas especiales</p>
+                    <ul class="text-sm text-slate-700 font-medium space-y-1.5">
+                        <li>· Basta con <b>1 acierto</b> para quedarte con la carta.</li>
+                        <li>· Si fallas todo, la carta vuelve al pozo. Sin penalización.</li>
+                        <li>· No hay opción riesgo ni turno extra.</li>
+                    </ul>
+                </div>
+                <button onclick="renderTurno()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    Comenzar repesca
+                </button>
+            </div>
+        `;
     }
 
     // ============================================================
@@ -306,6 +347,18 @@
         const pozoEl = document.getElementById('pozo-count');
         if (mazoEl) mazoEl.innerText = state.mazo.length;
         if (pozoEl) pozoEl.innerText = state.pozo.length;
+        // Mostrar/ocultar el badge de fase del pozo
+        const badge = document.getElementById('fase-badge');
+        const mazoEtiqueta = document.getElementById('mazo-etiqueta');
+        if (badge) {
+            if (state.fasePozo) {
+                badge.classList.remove('hidden');
+                if (mazoEtiqueta) mazoEtiqueta.innerText = 'Repesca';
+            } else {
+                badge.classList.add('hidden');
+                if (mazoEtiqueta) mazoEtiqueta.innerText = 'Mazo';
+            }
+        }
     }
 
     function renderScoreBoard() {
@@ -397,6 +450,14 @@
 
     function renderTurno() {
         if (state.mazo.length === 0) {
+            // Si es multi y aún no se ha hecho fase pozo, intentamos repesca
+            if (state.modo === 'multi' && !state.fasePozo) {
+                const mujeresEnPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
+                if (mujeresEnPozo.length > 0) {
+                    iniciarFasePozo();
+                    return;
+                }
+            }
             mostrarFinPartida();
             return;
         }
@@ -442,7 +503,7 @@
 
     function sacarCarta() {
         if (state.mazo.length === 0) {
-            mostrarFinPartida();
+            renderTurno();
             return;
         }
         const carta = state.mazo.shift();
@@ -549,8 +610,21 @@
         const m = state.cartaActual;
         const aciertos = ['pais','prof','fama'].filter(k => state.preguntasEstado[k] === true).length;
 
-        let mensaje = '', accion = '';
-        if (aciertos === 3) {
+        let mensaje = '', accion = '', etiquetaFase = '';
+
+        if (state.fasePozo) {
+            // Reglas simplificadas en fase pozo: 1 acierto basta, sin riesgo ni turno extra
+            etiquetaFase = `<p class="text-xs font-medium uppercase tracking-wider mb-2" style="color:#43C6AC">Fase del pozo</p>`;
+            if (aciertos >= 1) {
+                jug.cartas.push(m);
+                const palabra = aciertos === 1 ? '1 acierto' : `${aciertos} aciertos`;
+                mensaje = `<span class="text-emerald-600">${palabra}.</span> ${jug.nombre} se queda con la carta.`;
+            } else {
+                state.pozo.push(m);
+                mensaje = `<span class="text-rose-600">0 aciertos.</span> La carta vuelve al pozo. Sin penalización.`;
+            }
+            accion = `<button onclick="siguienteTurno()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">Siguiente jugador</button>`;
+        } else if (aciertos === 3) {
             jug.cartas.push(m);
             mensaje = `<span class="text-emerald-600">3 aciertos.</span> ${jug.nombre} gana la carta y juega otro turno.`;
             accion = `<button onclick="turnoExtra()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">Seguir jugando</button>`;
@@ -586,6 +660,7 @@
                     <img src="Set_Completo_60_Tarjetas_Mujeres/${m.id}.png" alt="${m.nombre}"
                          class="rounded-2xl shadow-xl w-40 aspect-[2/3] object-cover border border-slate-200">
                 </div>
+                ${etiquetaFase}
                 <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-2">${m.nombre}</h3>
                 <p class="text-slate-600 mb-8 text-lg font-medium">${mensaje}</p>
                 ${accion}
@@ -1133,6 +1208,12 @@
         state.pozo = [];
         state.cartaActual = null;
         state.skipNext = false;
+        state.fasePozo = false;
+        state.preguntasEstado = null;
+        state.desafioCarta = null;
+        state.intercambioElegidas = null;
+        state.intercambioEntregarIdx = null;
+        state.exilioOponente = null;
         mostrarVista('vista-modo');
     }
 
