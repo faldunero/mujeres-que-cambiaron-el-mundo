@@ -135,6 +135,27 @@
 
     </main>
 
+    <!-- MODAL: Cartas del jugador -->
+    <div id="modal-cartas" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm" onclick="if(event.target===this) cerrarModalCartas()">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-hidden flex flex-col">
+            <div class="flex items-center justify-between px-8 py-6 border-b border-slate-100">
+                <div>
+                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Cartas ganadas</p>
+                    <h3 id="modal-cartas-titulo" class="text-xl font-black italic uppercase tracking-tighter text-slate-950">---</h3>
+                </div>
+                <button onclick="cerrarModalCartas()" class="text-slate-400 hover:text-slate-900 transition-colors p-2" aria-label="Cerrar">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div id="modal-cartas-contenido" class="p-8 overflow-y-auto"></div>
+            <div class="px-8 py-4 border-t border-slate-100 flex justify-end">
+                <button onclick="cerrarModalCartas()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-2.5 px-5 rounded-full text-sm transition-colors">
+                    Volver a la partida
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
     // ============================================================
     // ESTADO DEL JUEGO
@@ -256,12 +277,41 @@
         sb.innerHTML = state.jugadores.map((j, i) => {
             const activo = i === state.turnoActual;
             return `
-                <div class="flex items-center gap-2 px-4 py-2 rounded-full border ${activo ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-200 text-slate-600'}">
+                <button onclick="verCartasJugador(${i})" class="flex items-center gap-2 px-4 py-2 rounded-full border transition-colors ${activo ? 'bg-slate-900 border-slate-900 text-white hover:bg-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-900'}" title="Ver cartas de ${j.nombre}">
                     <span class="text-xs font-medium">${j.nombre}</span>
                     <span class="text-xs font-semibold tabular-nums ${activo ? 'bg-white/15' : 'bg-slate-100'} px-2 py-0.5 rounded-full">${j.cartas.length}</span>
-                </div>
+                </button>
             `;
         }).join('');
+    }
+
+    function verCartasJugador(i) {
+        const j = state.jugadores[i];
+        const modal = document.getElementById('modal-cartas');
+        const contenido = document.getElementById('modal-cartas-contenido');
+        const titulo = document.getElementById('modal-cartas-titulo');
+        titulo.innerText = `${j.nombre} · ${j.cartas.length} carta${j.cartas.length === 1 ? '' : 's'}`;
+        if (j.cartas.length === 0) {
+            contenido.innerHTML = `<p class="text-center text-slate-400 font-medium py-16">Este jugador aún no tiene cartas ganadas.</p>`;
+        } else {
+            contenido.innerHTML = `
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    ${j.cartas.map(c => `
+                        <div class="group">
+                            <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
+                                 class="rounded-xl w-full aspect-[2/3] object-cover shadow border border-slate-200 mb-2">
+                            <p class="text-sm font-semibold text-slate-900 leading-tight">${c.nombre}</p>
+                            <p class="text-xs text-slate-500 font-medium">${c.pais}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        modal.classList.remove('hidden');
+    }
+
+    function cerrarModalCartas() {
+        document.getElementById('modal-cartas').classList.add('hidden');
     }
 
     function renderTurno() {
@@ -725,26 +775,55 @@
                 finTurnoMensaje(`${t.tipo}: no hay condiciones para intercambiar (necesitas 1 carta ganada y 2+ en pozo). Se descarta.`);
                 return;
             }
-            const zona = document.getElementById('zona-accion');
-            zona.innerHTML = `
-                <div class="py-8 fade-in">
-                    <div class="text-center mb-6">
-                        <p class="text-xs text-sky-600 font-medium uppercase tracking-wider mb-3">Intercambio</p>
-                        <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-2">Intercambio Cultural</h3>
-                        <p class="text-slate-600 font-medium">Elige UNA de tus cartas ganadas para enviar al pozo. Luego elegirás 2 del pozo.</p>
-                    </div>
-                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-3 text-center">Tus cartas</p>
-                    <div class="grid grid-cols-3 md:grid-cols-5 gap-3 max-h-[280px] overflow-y-auto p-1">
-                        ${jug.cartas.map((c, idx) => `
-                            <button onclick="intercambioEntregar(${idx})" class="group">
-                                <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
-                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border border-slate-200 group-hover:border-slate-900 group-hover:shadow-lg transition-all">
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
+            state.intercambioEntregarIdx = null;
+            mostrarIntercambioEntregar();
         }
+    }
+
+    function mostrarIntercambioEntregar() {
+        const jug = state.jugadores[state.turnoActual];
+        const sel = state.intercambioEntregarIdx;
+        const listo = sel !== null && sel !== undefined;
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="py-8 fade-in">
+                <div class="text-center mb-6">
+                    <p class="text-xs text-sky-600 font-medium uppercase tracking-wider mb-3">Intercambio · Paso 1 de 2</p>
+                    <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-2">Elige qué carta entregar</h3>
+                    <p class="text-slate-500 text-sm font-medium max-w-md mx-auto">Selecciona UNA de tus cartas ganadas para enviar al pozo. Después vas a elegir 2 del pozo para llevarte.</p>
+                </div>
+                <div class="grid grid-cols-3 md:grid-cols-5 gap-3 max-h-[280px] overflow-y-auto p-1 mb-6">
+                    ${jug.cartas.map((c, idx) => {
+                        const seleccionada = idx === sel;
+                        return `
+                            <button onclick="intercambioSeleccionarPropia(${idx})" class="relative">
+                                <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
+                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border transition-all ${seleccionada ? 'border-sky-600 ring-4 ring-sky-300' : 'border-slate-200 hover:border-slate-900'}">
+                                ${seleccionada ? `<span class="absolute inset-0 bg-sky-600/25 rounded-xl"></span>` : ''}
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+                <div class="flex justify-center">
+                    <button onclick="intercambioConfirmarEntrega()" ${listo ? '' : 'disabled'}
+                            class="${listo ? 'bg-slate-900 hover:bg-slate-700 text-white' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Entregar y continuar
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function intercambioSeleccionarPropia(idx) {
+        state.intercambioEntregarIdx = (state.intercambioEntregarIdx === idx) ? null : idx;
+        mostrarIntercambioEntregar();
+    }
+
+    function intercambioConfirmarEntrega() {
+        const idx = state.intercambioEntregarIdx;
+        if (idx === null || idx === undefined) return;
+        intercambioEntregar(idx);
+        state.intercambioEntregarIdx = null;
     }
 
     function exiliarOponente(oponenteI) {
@@ -791,23 +870,36 @@
         const cartasMujerPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
         const elegidas = state.intercambioElegidas || [];
         const zona = document.getElementById('zona-accion');
+        const listo = elegidas.length === 2;
         zona.innerHTML = `
             <div class="py-8 fade-in">
                 <div class="text-center mb-6">
-                    <p class="text-xs text-sky-600 font-medium uppercase tracking-wider mb-2">Intercambio</p>
+                    <p class="text-xs text-sky-600 font-medium uppercase tracking-wider mb-2">Intercambio · Paso 2 de 2</p>
                     <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-2">Elige 2 cartas del pozo</h3>
-                    <p class="text-slate-600 font-medium">Seleccionadas: ${elegidas.length} / 2</p>
+                    <p class="text-slate-500 text-sm font-medium">Toca una carta para seleccionarla. Toca otra vez para deseleccionar.</p>
+                    <p class="mt-2 text-slate-900 font-semibold">Seleccionadas: ${elegidas.length} / 2</p>
                 </div>
-                <div class="grid grid-cols-3 md:grid-cols-5 gap-3 max-h-[320px] overflow-y-auto p-1">
+                <div class="grid grid-cols-3 md:grid-cols-5 gap-3 max-h-[320px] overflow-y-auto p-1 mb-6">
                     ${cartasMujerPozo.map((c, idx) => {
-                        const seleccionada = elegidas.includes(idx);
+                        const orden = elegidas.indexOf(idx);
+                        const seleccionada = orden >= 0;
                         return `
-                            <button onclick="intercambioElegirCarta(${idx})" class="relative group">
+                            <button onclick="intercambioElegirCarta(${idx})" class="relative">
                                 <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
-                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border ${seleccionada ? 'border-sky-600 ring-2 ring-sky-600' : 'border-slate-200'} group-hover:border-slate-900 transition-all">
+                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border transition-all ${seleccionada ? 'border-sky-600 ring-4 ring-sky-300' : 'border-slate-200 hover:border-slate-900'}">
+                                ${seleccionada ? `
+                                    <span class="absolute inset-0 bg-sky-600/25 rounded-xl"></span>
+                                    <span class="absolute top-2 left-2 bg-sky-600 text-white font-semibold text-sm w-7 h-7 rounded-full flex items-center justify-center shadow-lg">${orden + 1}</span>
+                                ` : ''}
                             </button>
                         `;
                     }).join('')}
+                </div>
+                <div class="flex justify-center">
+                    <button onclick="intercambioConfirmar()" ${listo ? '' : 'disabled'}
+                            class="${listo ? 'bg-slate-900 hover:bg-slate-700 text-white' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Confirmar intercambio
+                    </button>
                 </div>
             </div>
         `;
@@ -823,21 +915,22 @@
             elegidas.push(idx);
         }
         state.intercambioElegidas = elegidas;
-        if (elegidas.length === 2) {
-            // Tomar las 2 cartas y pasarlas al jugador
-            const jug = state.jugadores[state.turnoActual];
-            const cartasMujerPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
-            const aTomar = elegidas.map(i => cartasMujerPozo[i]);
-            aTomar.forEach(c => {
-                const pIdx = state.pozo.indexOf(c);
-                if (pIdx >= 0) state.pozo.splice(pIdx, 1);
-                jug.cartas.push(c);
-            });
-            state.intercambioElegidas = null;
-            finTurnoMensaje(`Intercambio completado: ganaste 2 cartas del pozo.`);
-        } else {
-            mostrarIntercambioElegirPozo();
-        }
+        mostrarIntercambioElegirPozo();
+    }
+
+    function intercambioConfirmar() {
+        const elegidas = state.intercambioElegidas || [];
+        if (elegidas.length !== 2) return;
+        const jug = state.jugadores[state.turnoActual];
+        const cartasMujerPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
+        const aTomar = elegidas.map(i => cartasMujerPozo[i]);
+        aTomar.forEach(c => {
+            const pIdx = state.pozo.indexOf(c);
+            if (pIdx >= 0) state.pozo.splice(pIdx, 1);
+            jug.cartas.push(c);
+        });
+        state.intercambioElegidas = null;
+        finTurnoMensaje(`Intercambio completado: ${jug.nombre} gana 2 cartas del pozo.`);
     }
 
     function finTurnoMensaje(msg) {
