@@ -1,0 +1,12 @@
+[
+  { "id": "truco_01_censura",     "tipo": "Censura",              "efecto": "El siguiente jugador pierde su turno.",                         "estilo": "bg-rose-50 text-rose-700 border-rose-100" },
+  { "id": "truco_02_censura",     "tipo": "Censura",              "efecto": "El siguiente jugador pierde su turno.",                         "estilo": "bg-rose-50 text-rose-700 border-rose-100" },
+  { "id": "truco_03_censura",     "tipo": "Censura",              "efecto": "El siguiente jugador pierde su turno.",                         "estilo": "bg-rose-50 text-rose-700 border-rose-100" },
+  { "id": "truco_04_exilio",      "tipo": "Exilio de puntos",     "efecto": "Elige a un oponente: debe devolver 1 carta ganada al pozo.",    "estilo": "bg-amber-50 text-amber-700 border-amber-100" },
+  { "id": "truco_05_exilio",      "tipo": "Exilio de puntos",     "efecto": "Elige a un oponente: debe devolver 1 carta ganada al pozo.",    "estilo": "bg-amber-50 text-amber-700 border-amber-100" },
+  { "id": "truco_06_exilio",      "tipo": "Exilio de puntos",     "efecto": "Elige a un oponente: debe devolver 1 carta ganada al pozo.",    "estilo": "bg-amber-50 text-amber-700 border-amber-100" },
+  { "id": "truco_07_inspiracion", "tipo": "Inspiración Extra",    "efecto": "Saca otra carta y juega un turno inmediato.",                   "estilo": "bg-emerald-50 text-emerald-700 border-emerald-100" },
+  { "id": "truco_08_inspiracion", "tipo": "Inspiración Extra",    "efecto": "Saca otra carta y juega un turno inmediato.",                   "estilo": "bg-emerald-50 text-emerald-700 border-emerald-100" },
+  { "id": "truco_09_intercambio", "tipo": "Intercambio Cultural", "efecto": "Intercambia una de tus cartas ganadas por 2 cartas del pozo.",  "estilo": "bg-sky-50 text-sky-700 border-sky-100" },
+  { "id": "truco_10_intercambio", "tipo": "Intercambio Cultural", "efecto": "Intercambia una de tus cartas ganadas por 2 cartas del pozo.",  "estilo": "bg-sky-50 text-sky-700 border-sky-100" }
+]

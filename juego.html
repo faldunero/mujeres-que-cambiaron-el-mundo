@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Jugar - Mujeres que Cambiaron el Mundo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .card-flip { animation: flip 0.5s ease-out; }
+        @keyframes flip { 0% { transform: rotateY(90deg); opacity: 0; } 100% { transform: rotateY(0); opacity: 1; } }
+    </style>
+</head>
+<body class="antialiased text-slate-900">
+
+    <!-- HEADER -->
+    <div class="w-full bg-white border-b border-slate-100">
+        <div class="max-w-[1400px] mx-auto h-[90px] flex items-center justify-between px-6">
+            <a href="index.html" class="text-slate-500 hover:text-slate-900 text-sm font-medium transition-colors">
+                Volver al mazo
+            </a>
+            <img src="logo/logotipo.svg" alt="Ludolab" class="h-7 opacity-80">
+        </div>
+    </div>
+
+    <main class="max-w-[1100px] mx-auto p-6 md:p-10">
+
+        <!-- VISTA 1: SELECCIÓN MODO -->
+        <section id="vista-modo" class="fade-in">
+            <div class="text-center mb-10">
+                <h1 class="text-5xl md:text-6xl font-black italic tracking-tighter uppercase text-slate-950 mb-4">A Jugar</h1>
+                <p class="text-slate-500 text-lg font-medium">Elige cómo querés jugar</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                <button onclick="elegirModo('individual')" class="bg-white border border-slate-200 hover:border-slate-900 rounded-3xl p-10 text-left transition-colors">
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">Modo 01</p>
+                    <h2 class="text-2xl font-semibold tracking-tight mb-3 text-slate-900">Individual</h2>
+                    <p class="text-slate-500 font-normal leading-relaxed mb-6 text-sm">Modo práctica solo. Estudia las 60 cartas adivinando país, profesión e hito de cada mujer.</p>
+                    <ul class="text-xs text-slate-400 space-y-1 font-normal mb-6">
+                        <li>60 cartas en el mazo</li>
+                        <li>Sin cartas de truco</li>
+                        <li>Score personal al final</li>
+                    </ul>
+                    <span class="inline-flex items-center justify-center bg-slate-900 text-white font-medium py-2.5 px-5 rounded-full text-sm">Empezar</span>
+                </button>
+
+                <button onclick="elegirModo('multi')" class="bg-white border border-slate-200 hover:border-slate-900 rounded-3xl p-10 text-left transition-colors">
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">Modo 02</p>
+                    <h2 class="text-2xl font-semibold tracking-tight mb-3 text-slate-900">Multijugador</h2>
+                    <p class="text-slate-500 font-normal leading-relaxed mb-6 text-sm">2 a 5 jugadores se turnan el dispositivo. Incluye cartas de truco para voltear el juego.</p>
+                    <ul class="text-xs text-slate-400 space-y-1 font-normal mb-6">
+                        <li>60 cartas + 10 trucos</li>
+                        <li>Censura, Exilio, Inspiración, Intercambio</li>
+                        <li>Gana quien acumule más cartas</li>
+                    </ul>
+                    <span class="inline-flex items-center justify-center bg-slate-900 text-white font-medium py-2.5 px-5 rounded-full text-sm">Empezar</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- VISTA 2: SETUP JUGADORES (solo multi) -->
+        <section id="vista-setup" class="hidden fade-in">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-black italic tracking-tighter uppercase text-slate-950 mb-3">Jugadores</h1>
+                <p class="text-slate-500 font-medium">¿Cuántos van a jugar?</p>
+            </div>
+            <div class="max-w-xl mx-auto bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                <div class="flex justify-center gap-3 mb-8">
+                    <button onclick="setNumJugadores(2)" class="num-jug-btn w-12 h-12 rounded-full font-medium text-base transition-colors" data-n="2">2</button>
+                    <button onclick="setNumJugadores(3)" class="num-jug-btn w-12 h-12 rounded-full font-medium text-base transition-colors" data-n="3">3</button>
+                    <button onclick="setNumJugadores(4)" class="num-jug-btn w-12 h-12 rounded-full font-medium text-base transition-colors" data-n="4">4</button>
+                    <button onclick="setNumJugadores(5)" class="num-jug-btn w-12 h-12 rounded-full font-medium text-base transition-colors" data-n="5">5</button>
+                </div>
+
+                <div id="inputs-jugadores" class="space-y-3 mb-8"></div>
+
+                <div class="flex gap-3">
+                    <button onclick="volverA('modo')" class="flex-1 bg-white border border-slate-200 hover:border-slate-900 text-slate-900 font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Volver
+                    </button>
+                    <button id="btn-comenzar" onclick="comenzarPartida()" class="flex-1 bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Comenzar
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 3: PARTIDA -->
+        <section id="vista-partida" class="hidden fade-in">
+            <!-- Score / Turno -->
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 mb-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+                    <div>
+                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Turno actual</p>
+                        <h2 id="turno-nombre" class="text-3xl font-black italic uppercase tracking-tighter text-slate-950">---</h2>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Cartas restantes</p>
+                        <p id="mazo-count" class="text-3xl font-black tabular-nums text-slate-800">--</p>
+                    </div>
+                </div>
+                <div id="score-board" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <!-- Zona de acción principal -->
+            <div id="zona-accion" class="bg-white rounded-3xl border border-slate-200 p-6 md:p-10 shadow-sm min-h-[480px]"></div>
+
+            <div class="mt-6 flex justify-center">
+                <button onclick="abandonar()" class="text-slate-400 hover:text-slate-900 transition-colors text-sm font-medium">
+                    Abandonar partida
+                </button>
+            </div>
+        </section>
+
+        <!-- VISTA 4: FIN DE PARTIDA -->
+        <section id="vista-fin" class="hidden fade-in">
+            <div class="text-center mb-10">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-4">Resultados</p>
+                <h1 class="text-5xl md:text-6xl font-black italic tracking-tighter uppercase text-slate-950 mb-3">Fin del juego</h1>
+                <p class="text-slate-500 text-lg font-medium">Estos son los resultados</p>
+            </div>
+            <div id="ranking-final" class="max-w-xl mx-auto space-y-3 mb-10"></div>
+            <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                <button onclick="reiniciar()" class="flex-1 bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    Jugar de nuevo
+                </button>
+                <a href="index.html" class="flex-1 text-center bg-white border border-slate-200 hover:border-slate-900 text-slate-900 font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    Volver al mazo
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+    // ============================================================
+    // ESTADO DEL JUEGO
+    // ============================================================
+    const state = {
+        modo: null,             // 'individual' | 'multi'
+        numJugadores: 2,
+        jugadores: [],          // [{nombre, cartas: [mujerObj, ...]}]
+        turnoActual: 0,
+        mazo: [],               // cartas pendientes (mezcla mujeres + trucos en multi)
+        pozo: [],               // cartas descartadas
+        cartaActual: null,      // carta en juego
+        skipNext: false,        // flag Censura
+        mujeresData: [],
+        trucosData: []
+    };
+
+    // ============================================================
+    // CARGA DE DATOS
+    // ============================================================
+    async function cargarDatos() {
+        const [m, t] = await Promise.all([
+            fetch('data/mujeres.json').then(r => r.json()),
+            fetch('data/trucos.json').then(r => r.json())
+        ]);
+        state.mujeresData = m;
+        state.trucosData = t;
+    }
+
+    // ============================================================
+    // UTILS
+    // ============================================================
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function mostrarVista(id) {
+        ['vista-modo','vista-setup','vista-partida','vista-fin'].forEach(v => {
+            document.getElementById(v).classList.add('hidden');
+        });
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function volverA(vista) {
+        mostrarVista('vista-' + vista);
+    }
+
+    // ============================================================
+    // FLUJO: SELECCIÓN DE MODO
+    // ============================================================
+    function elegirModo(m) {
+        state.modo = m;
+        if (m === 'individual') {
+            state.numJugadores = 1;
+            state.jugadores = [{ nombre: 'Tú', cartas: [] }];
+            iniciarMazo();
+            mostrarVista('vista-partida');
+            renderTurno();
+        } else {
+            setNumJugadores(2);
+            mostrarVista('vista-setup');
+        }
+    }
+
+    function setNumJugadores(n) {
+        state.numJugadores = n;
+        document.querySelectorAll('.num-jug-btn').forEach(b => {
+            if (parseInt(b.dataset.n) === n) {
+                b.className = 'num-jug-btn w-12 h-12 rounded-full font-medium text-base transition-colors bg-slate-900 text-white';
+            } else {
+                b.className = 'num-jug-btn w-12 h-12 rounded-full font-medium text-base transition-colors bg-white border border-slate-200 hover:border-slate-900 text-slate-900';
+            }
+        });
+        const div = document.getElementById('inputs-jugadores');
+        div.innerHTML = Array.from({length: n}, (_, i) => `
+            <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-black text-sm flex items-center justify-center shrink-0">${i+1}</span>
+                <input type="text" id="jug-${i}" placeholder="Jugador ${i+1}" value="Jugador ${i+1}"
+                    class="flex-1 bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all">
+            </div>
+        `).join('');
+    }
+
+    function comenzarPartida() {
+        state.jugadores = [];
+        for (let i = 0; i < state.numJugadores; i++) {
+            const v = document.getElementById('jug-' + i).value.trim() || ('Jugador ' + (i+1));
+            state.jugadores.push({ nombre: v, cartas: [] });
+        }
+        iniciarMazo();
+        mostrarVista('vista-partida');
+        renderTurno();
+    }
+
+    function iniciarMazo() {
+        const mujeres = state.mujeresData.map(m => ({ ...m, tipoCarta: 'mujer' }));
+        if (state.modo === 'multi') {
+            const trucos = state.trucosData.map(t => ({ ...t, tipoCarta: 'truco' }));
+            state.mazo = shuffle([...mujeres, ...trucos]);
+        } else {
+            state.mazo = shuffle(mujeres);
+        }
+        state.pozo = [];
+        state.turnoActual = 0;
+        state.cartaActual = null;
+        state.skipNext = false;
+    }
+
+    // ============================================================
+    // RENDERIZADO DEL TURNO
+    // ============================================================
+    function renderScoreBoard() {
+        const sb = document.getElementById('score-board');
+        sb.innerHTML = state.jugadores.map((j, i) => {
+            const activo = i === state.turnoActual;
+            return `
+                <div class="flex items-center gap-2 px-4 py-2 rounded-full border ${activo ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-200 text-slate-600'}">
+                    <span class="text-xs font-medium">${j.nombre}</span>
+                    <span class="text-xs font-semibold tabular-nums ${activo ? 'bg-white/15' : 'bg-slate-100'} px-2 py-0.5 rounded-full">${j.cartas.length}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderTurno() {
+        if (state.mazo.length === 0) {
+            mostrarFinPartida();
+            return;
+        }
+
+        // Aplicar censura si corresponde
+        if (state.skipNext) {
+            state.skipNext = false;
+            const saltado = state.jugadores[state.turnoActual];
+            document.getElementById('turno-nombre').innerText = saltado.nombre;
+            document.getElementById('mazo-count').innerText = state.mazo.length;
+            renderScoreBoard();
+            document.getElementById('zona-accion').innerHTML = `
+                <div class="text-center py-12 fade-in">
+                    <p class="text-xs font-medium text-rose-600 uppercase tracking-wider mb-4">Censura</p>
+                    <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-3">Turno perdido</h3>
+                    <p class="text-slate-500 font-medium mb-8">
+                        <span class="text-slate-900 font-semibold">${saltado.nombre}</span> pierde su turno por efecto de Censura.
+                    </p>
+                    <button onclick="siguienteTurno()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Siguiente jugador
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        const jug = state.jugadores[state.turnoActual];
+        document.getElementById('turno-nombre').innerText = jug.nombre;
+        document.getElementById('mazo-count').innerText = state.mazo.length;
+        renderScoreBoard();
+
+        document.getElementById('zona-accion').innerHTML = `
+            <div class="text-center py-12 fade-in">
+                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4">Es el turno de</p>
+                <h3 class="text-4xl md:text-5xl font-black italic uppercase tracking-tighter mb-8 text-slate-950">${jug.nombre}</h3>
+                <button onclick="sacarCarta()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-8 rounded-full text-sm transition-colors">
+                    Sacar carta
+                </button>
+                <p class="mt-8 text-xs text-slate-400 font-medium">${state.pozo.length} carta(s) en el pozo</p>
+            </div>
+        `;
+    }
+
+    function sacarCarta() {
+        const carta = state.mazo.shift();
+        state.cartaActual = carta;
+        if (carta.tipoCarta === 'truco') {
+            mostrarTruco(carta);
+        } else {
+            mostrarMujer(carta);
+        }
+    }
+
+    // ============================================================
+    // FLUJO: CARTA DE MUJER (sistema honor)
+    // ============================================================
+    function mostrarMujer(m) {
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="grid md:grid-cols-2 gap-8 items-center card-flip">
+                <div class="flex justify-center">
+                    <img src="Set_Completo_60_Tarjetas_Mujeres/${m.id}.png" alt="${m.nombre}"
+                         class="rounded-3xl shadow-2xl w-full max-w-[280px] aspect-[2/3] object-cover border border-slate-200">
+                </div>
+                <div>
+                    <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2">Adivina 3 datos</p>
+                    <h3 class="text-4xl font-black italic uppercase tracking-tighter mb-6 text-slate-950">${m.nombre}</h3>
+                    <div id="preguntas-mujer" class="space-y-4"></div>
+                </div>
+            </div>
+        `;
+        state.aciertos = 0;
+        state.preguntasEstado = { pais: null, prof: null, fama: null };
+        renderPreguntas();
+    }
+
+    function renderPreguntas() {
+        const m = state.cartaActual;
+        const st = state.preguntasEstado;
+        const preg = document.getElementById('preguntas-mujer');
+
+        const row = (key, label, valor) => {
+            const s = st[key];
+            if (s === null) {
+                return `
+                    <div class="border border-slate-200 rounded-2xl p-4">
+                        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-2">${label}</p>
+                        <p class="text-slate-700 font-medium mb-3 text-sm">Dilo en voz alta. ¿Listo para ver la respuesta?</p>
+                        <button onclick="revelarRespuesta('${key}')" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-2 px-5 rounded-full text-sm transition-colors">
+                            Ver respuesta
+                        </button>
+                    </div>
+                `;
+            } else if (s === 'revelado') {
+                return `
+                    <div class="border border-slate-200 rounded-2xl p-4">
+                        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-2">${label}</p>
+                        <p class="text-slate-900 font-semibold text-lg mb-3">${valor}</p>
+                        <div class="flex gap-2">
+                            <button onclick="marcarPregunta('${key}', true)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-full text-sm transition-colors">
+                                Acerté
+                            </button>
+                            <button onclick="marcarPregunta('${key}', false)" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-medium py-2 px-4 rounded-full text-sm transition-colors">
+                                Fallé
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const ok = s === true;
+                return `
+                    <div class="border ${ok ? 'border-emerald-200 bg-emerald-50' : 'border-rose-200 bg-rose-50'} rounded-2xl p-4">
+                        <p class="text-xs ${ok ? 'text-emerald-700' : 'text-rose-700'} font-medium uppercase tracking-wider mb-2">${label} · ${ok ? 'acertado' : 'fallido'}</p>
+                        <p class="${ok ? 'text-emerald-900' : 'text-rose-900'} font-semibold">${valor}</p>
+                    </div>
+                `;
+            }
+        };
+
+        preg.innerHTML =
+            row('pais', 'País de origen', m.pais) +
+            row('prof', 'Profesión / Área', m.prof) +
+            row('fama', 'Hito o logro principal', m.fama);
+
+        // Si ya respondió todas, mostrar resumen
+        const todas = ['pais','prof','fama'].every(k => st[k] === true || st[k] === false);
+        if (todas) {
+            resolverTurnoMujer();
+        }
+    }
+
+    function revelarRespuesta(key) {
+        state.preguntasEstado[key] = 'revelado';
+        renderPreguntas();
+    }
+
+    function marcarPregunta(key, acerto) {
+        state.preguntasEstado[key] = acerto;
+        if (acerto) state.aciertos = (state.aciertos || 0) + 1;
+        renderPreguntas();
+    }
+
+    function resolverTurnoMujer() {
+        const jug = state.jugadores[state.turnoActual];
+        const m = state.cartaActual;
+        const aciertos = ['pais','prof','fama'].filter(k => state.preguntasEstado[k] === true).length;
+
+        let mensaje = '', accion = '';
+        if (aciertos === 3) {
+            jug.cartas.push(m);
+            mensaje = `<span class="text-emerald-600">3 aciertos.</span> ${jug.nombre} gana la carta y juega otro turno.`;
+            accion = `<button onclick="turnoExtra()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">Seguir jugando</button>`;
+        } else if (aciertos === 2) {
+            jug.cartas.push(m);
+            mensaje = `<span class="text-emerald-600">2 aciertos.</span> ${jug.nombre} gana la carta.`;
+            accion = `<button onclick="siguienteTurno()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">Siguiente jugador</button>`;
+        } else if (aciertos === 1) {
+            // Opción seguro vs riesgo
+            mensaje = `<span class="text-amber-600">1 acierto.</span> ${jug.nombre} debe elegir:`;
+            accion = `
+                <div class="flex flex-col sm:flex-row gap-3 justify-center max-w-xl mx-auto">
+                    <button onclick="opcionSeguro()" class="flex-1 bg-white border border-slate-200 hover:border-slate-900 text-slate-900 font-medium py-3 px-6 rounded-2xl text-sm transition-colors text-left">
+                        <span class="block font-semibold mb-1">Opción segura</span>
+                        <span class="block text-xs text-slate-500 font-normal">Carta al pozo, termina turno</span>
+                    </button>
+                    <button onclick="opcionRiesgo()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-6 rounded-2xl text-sm transition-colors text-left">
+                        <span class="block font-semibold mb-1">Opción riesgo</span>
+                        <span class="block text-xs opacity-90 font-normal">Intenta uno que fallaste</span>
+                    </button>
+                </div>
+            `;
+        } else {
+            state.pozo.push(m);
+            mensaje = `<span class="text-rose-600">0 aciertos.</span> La carta va al pozo.`;
+            accion = `<button onclick="siguienteTurno()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">Siguiente jugador</button>`;
+        }
+
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="text-center py-6 fade-in">
+                <div class="flex justify-center mb-6">
+                    <img src="Set_Completo_60_Tarjetas_Mujeres/${m.id}.png" alt="${m.nombre}"
+                         class="rounded-2xl shadow-xl w-40 aspect-[2/3] object-cover border border-slate-200">
+                </div>
+                <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-2">${m.nombre}</h3>
+                <p class="text-slate-600 mb-8 text-lg font-medium">${mensaje}</p>
+                ${accion}
+            </div>
+        `;
+    }
+
+    function opcionSeguro() {
+        state.pozo.push(state.cartaActual);
+        siguienteTurno();
+    }
+
+    function opcionRiesgo() {
+        const m = state.cartaActual;
+        const fallados = ['pais','prof','fama'].filter(k => state.preguntasEstado[k] === false);
+        const jug = state.jugadores[state.turnoActual];
+        const zona = document.getElementById('zona-accion');
+        const labels = { pais: 'País', prof: 'Profesión', fama: 'Hito' };
+        zona.innerHTML = `
+            <div class="text-center py-10 fade-in">
+                <p class="text-xs text-amber-600 font-medium uppercase tracking-wider mb-3">Opción Riesgo</p>
+                <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-4">Elige cuál intentar</h3>
+                <p class="text-slate-600 mb-8 font-medium">Si aciertas te quedas con la carta. Si fallas, va al pozo y pierdes tu próximo turno.</p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center max-w-xl mx-auto">
+                    ${fallados.map(k => `
+                        <button onclick="intentarRiesgo('${k}')" class="flex-1 bg-white border border-amber-400 hover:bg-amber-50 text-slate-900 font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                            ${labels[k]}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    function intentarRiesgo(key) {
+        const m = state.cartaActual;
+        const valor = m[key];
+        const labels = { pais: 'País', prof: 'Profesión', fama: 'Hito' };
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="text-center py-10 fade-in">
+                <p class="text-xs text-amber-600 font-medium uppercase tracking-wider mb-3">Di tu respuesta en voz alta</p>
+                <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-8">${labels[key]} de ${m.nombre}</h3>
+                <button onclick="verRespuestaRiesgo('${key}')" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    Ver respuesta
+                </button>
+            </div>
+        `;
+    }
+
+    function verRespuestaRiesgo(key) {
+        const m = state.cartaActual;
+        const valor = m[key];
+        const labels = { pais: 'País', prof: 'Profesión', fama: 'Hito' };
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="text-center py-10 fade-in">
+                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-3">${labels[key]} correcto</p>
+                <p class="text-3xl font-black italic uppercase tracking-tighter mb-8 text-slate-950">${valor}</p>
+                <div class="flex gap-3 justify-center">
+                    <button onclick="resolverRiesgo(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Acerté
+                    </button>
+                    <button onclick="resolverRiesgo(false)" class="bg-rose-600 hover:bg-rose-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Fallé
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function resolverRiesgo(acerto) {
+        const jug = state.jugadores[state.turnoActual];
+        if (acerto) {
+            jug.cartas.push(state.cartaActual);
+        } else {
+            state.pozo.push(state.cartaActual);
+            // Pierde próximo turno: set skipNext para ESE jugador después del siguiente
+            // Como convención: marcamos al jugador para saltar cuando vuelva a ser su turno
+            jug.skipSiguiente = true;
+        }
+        siguienteTurno();
+    }
+
+    // ============================================================
+    // FLUJO: CARTA DE TRUCO
+    // ============================================================
+    function mostrarTruco(t) {
+        const jug = state.jugadores[state.turnoActual];
+        const tipo = t.tipo;
+
+        const zona = document.getElementById('zona-accion');
+
+        // Imagen del truco
+        const imgHtml = `
+            <div class="flex justify-center mb-6">
+                <img src="Cartas_de_Truco_Estandarizadas/${t.id}.png" alt="${t.tipo}"
+                     class="rounded-3xl shadow-2xl w-48 aspect-[2/3] object-cover border border-slate-200">
+            </div>
+        `;
+
+        // Header común
+        const header = `
+            <p class="text-xs font-medium uppercase tracking-wider mb-2 ${t.estilo.includes('rose') ? 'text-rose-600' : t.estilo.includes('amber') ? 'text-amber-600' : t.estilo.includes('emerald') ? 'text-emerald-600' : 'text-sky-600'}">Carta de truco</p>
+            <h3 class="text-4xl font-black italic uppercase tracking-tighter mb-2 text-slate-950">${t.tipo}</h3>
+            <p class="text-slate-600 font-medium mb-6">${t.efecto}</p>
+        `;
+
+        // Desafío de recuperación opcional (antes del efecto)
+        const desafioDisponible = state.pozo.length > 0;
+        const desafioHtml = desafioDisponible ? `
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 text-left">
+                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-2">Regla opcional</p>
+                <p class="text-sm text-slate-700 font-medium mb-3">Antes de aplicar el efecto, ${jug.nombre} puede intentar un <b>Desafío de Recuperación</b>: nombrar el hito de una carta del pozo para recuperarla.</p>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="iniciarDesafioRecuperacion()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-2 px-5 rounded-full text-sm transition-colors">
+                        Intentar desafío
+                    </button>
+                    <button onclick="aplicarTruco()" class="bg-white border border-slate-200 hover:border-slate-900 text-slate-700 font-medium py-2 px-5 rounded-full text-sm transition-colors">
+                        Saltar y aplicar efecto
+                    </button>
+                </div>
+            </div>
+        ` : '';
+
+        zona.innerHTML = `
+            <div class="text-center py-6 fade-in">
+                ${imgHtml}
+                ${header}
+                ${desafioHtml}
+                ${!desafioDisponible ? `
+                    <button onclick="aplicarTruco()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Aplicar efecto
+                    </button>
+                ` : ''}
+            </div>
+        `;
+    }
+
+    function iniciarDesafioRecuperacion() {
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="py-6 fade-in">
+                <div class="text-center mb-6">
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-2">Desafío de Recuperación</p>
+                    <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-3">Elige una carta del pozo</h3>
+                    <p class="text-slate-600 font-medium">Di en voz alta el hito principal de la carta elegida.</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 max-h-[340px] overflow-y-auto p-1">
+                    ${state.pozo.filter(c => c.tipoCarta === 'mujer').map((c, idx) => `
+                        <button onclick="desafiarCarta(${idx})" class="group relative">
+                            <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
+                                 class="rounded-xl w-full aspect-[2/3] object-cover shadow border border-slate-200 group-hover:border-slate-900 group-hover:shadow-lg transition-all">
+                        </button>
+                    `).join('')}
+                </div>
+                <div class="text-center mt-6">
+                    <button onclick="aplicarTruco()" class="text-slate-400 hover:text-slate-900 text-sm font-medium transition-colors">
+                        Cancelar desafío y aplicar truco
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function desafiarCarta(pozoIdx) {
+        const cartasMujerPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
+        const carta = cartasMujerPozo[pozoIdx];
+        state.desafioCarta = carta;
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="text-center py-10 fade-in">
+                <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-3">Desafío de Recuperación</p>
+                <div class="flex justify-center mb-6">
+                    <img src="Set_Completo_60_Tarjetas_Mujeres/${carta.id}.png" alt="${carta.nombre}"
+                         class="rounded-2xl shadow-xl w-40 aspect-[2/3] object-cover border border-slate-200">
+                </div>
+                <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-4">${carta.nombre}</h3>
+                <p class="text-slate-600 mb-8 font-medium">¿Cuál es su hito principal? Dilo en voz alta.</p>
+                <button onclick="verHitoDesafio()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    Ver respuesta
+                </button>
+            </div>
+        `;
+    }
+
+    function verHitoDesafio() {
+        const c = state.desafioCarta;
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="text-center py-10 fade-in">
+                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-3">Hito principal</p>
+                <p class="text-2xl font-black italic leading-tight mb-8 text-slate-950 max-w-xl mx-auto">${c.fama}</p>
+                <div class="flex gap-3 justify-center flex-wrap">
+                    <button onclick="resolverDesafio(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Acerté (recuperar carta)
+                    </button>
+                    <button onclick="resolverDesafio(false)" class="bg-rose-600 hover:bg-rose-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Fallé
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function resolverDesafio(acerto) {
+        if (acerto) {
+            const jug = state.jugadores[state.turnoActual];
+            const c = state.desafioCarta;
+            // sacarla del pozo
+            const idx = state.pozo.indexOf(c);
+            if (idx >= 0) state.pozo.splice(idx, 1);
+            jug.cartas.push(c);
+        }
+        state.desafioCarta = null;
+        aplicarTruco();
+    }
+
+    function aplicarTruco() {
+        const t = state.cartaActual;
+        const tipoKey = t.id.split('_')[2]; // censura | exilio | inspiracion | intercambio
+
+        if (tipoKey === 'censura') {
+            // Siguiente jugador pierde turno
+            state.skipNext = true;
+            state.pozo.push(t);
+            finTurnoMensaje(`${t.tipo} aplicado. El siguiente jugador perderá su turno.`);
+        } else if (tipoKey === 'inspiracion') {
+            state.pozo.push(t);
+            // Mismo jugador saca otra carta
+            const zona = document.getElementById('zona-accion');
+            zona.innerHTML = `
+                <div class="text-center py-12 fade-in">
+                    <p class="text-xs text-emerald-600 font-medium uppercase tracking-wider mb-4">Inspiración</p>
+                    <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-3">Juega otra vez</h3>
+                    <p class="text-slate-600 mb-8 font-medium">${state.jugadores[state.turnoActual].nombre} saca otra carta y juega de nuevo.</p>
+                    <button onclick="sacarCarta()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Sacar otra carta
+                    </button>
+                </div>
+            `;
+        } else if (tipoKey === 'exilio') {
+            state.pozo.push(t);
+            // Elegir oponente con cartas ganadas
+            const jugI = state.turnoActual;
+            const opciones = state.jugadores
+                .map((j, i) => ({ j, i }))
+                .filter(o => o.i !== jugI && o.j.cartas.length > 0);
+            if (opciones.length === 0) {
+                finTurnoMensaje(`${t.tipo}: ningún oponente tiene cartas ganadas. El efecto se descarta.`);
+                return;
+            }
+            const zona = document.getElementById('zona-accion');
+            zona.innerHTML = `
+                <div class="text-center py-10 fade-in">
+                    <p class="text-xs text-amber-600 font-medium uppercase tracking-wider mb-4">Exilio</p>
+                    <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-3">Exilio de puntos</h3>
+                    <p class="text-slate-600 mb-8 font-medium">${state.jugadores[jugI].nombre}, elige a un oponente. Deberá devolver 1 carta ganada al pozo.</p>
+                    <div class="flex flex-wrap gap-3 justify-center">
+                        ${opciones.map(o => `
+                            <button onclick="exiliarOponente(${o.i})" class="bg-amber-500 hover:bg-amber-600 text-white font-medium py-2.5 px-5 rounded-full text-sm transition-colors">
+                                ${o.j.nombre} (${o.j.cartas.length})
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        } else if (tipoKey === 'intercambio') {
+            state.pozo.push(t);
+            const jug = state.jugadores[state.turnoActual];
+            const cartasMujerPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
+            if (jug.cartas.length === 0 || cartasMujerPozo.length < 2) {
+                finTurnoMensaje(`${t.tipo}: no hay condiciones para intercambiar (necesitas 1 carta ganada y 2+ en pozo). Se descarta.`);
+                return;
+            }
+            const zona = document.getElementById('zona-accion');
+            zona.innerHTML = `
+                <div class="py-8 fade-in">
+                    <div class="text-center mb-6">
+                        <p class="text-xs text-sky-600 font-medium uppercase tracking-wider mb-3">Intercambio</p>
+                        <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-2">Intercambio Cultural</h3>
+                        <p class="text-slate-600 font-medium">Elige UNA de tus cartas ganadas para enviar al pozo. Luego elegirás 2 del pozo.</p>
+                    </div>
+                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-3 text-center">Tus cartas</p>
+                    <div class="grid grid-cols-3 md:grid-cols-5 gap-3 max-h-[280px] overflow-y-auto p-1">
+                        ${jug.cartas.map((c, idx) => `
+                            <button onclick="intercambioEntregar(${idx})" class="group">
+                                <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
+                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border border-slate-200 group-hover:border-slate-900 group-hover:shadow-lg transition-all">
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    function exiliarOponente(oponenteI) {
+        state.exilioOponente = oponenteI;
+        const op = state.jugadores[oponenteI];
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="py-8 fade-in">
+                <div class="text-center mb-6">
+                    <p class="text-xs text-amber-600 font-medium uppercase tracking-wider mb-2">Exilio</p>
+                    <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-2">${op.nombre}, elige qué carta devolver al pozo</h3>
+                </div>
+                <div class="grid grid-cols-3 md:grid-cols-5 gap-3 max-h-[320px] overflow-y-auto p-1">
+                    ${op.cartas.map((c, idx) => `
+                        <button onclick="entregarExilio(${idx})" class="group">
+                            <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
+                                 class="rounded-xl w-full aspect-[2/3] object-cover shadow border border-slate-200 group-hover:border-amber-500 group-hover:shadow-lg transition-all">
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+
+    function entregarExilio(cartaIdx) {
+        const op = state.jugadores[state.exilioOponente];
+        const carta = op.cartas.splice(cartaIdx, 1)[0];
+        state.pozo.push(carta);
+        state.exilioOponente = null;
+        finTurnoMensaje(`${op.nombre} pierde "${carta.nombre}". La carta va al pozo.`);
+    }
+
+    function intercambioEntregar(cartaIdx) {
+        const jug = state.jugadores[state.turnoActual];
+        const carta = jug.cartas.splice(cartaIdx, 1)[0];
+        state.pozo.push(carta);
+        // Ahora elegir 2 del pozo
+        state.intercambioElegidas = [];
+        mostrarIntercambioElegirPozo();
+    }
+
+    function mostrarIntercambioElegirPozo() {
+        const cartasMujerPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
+        const elegidas = state.intercambioElegidas || [];
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="py-8 fade-in">
+                <div class="text-center mb-6">
+                    <p class="text-xs text-sky-600 font-medium uppercase tracking-wider mb-2">Intercambio</p>
+                    <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-2">Elige 2 cartas del pozo</h3>
+                    <p class="text-slate-600 font-medium">Seleccionadas: ${elegidas.length} / 2</p>
+                </div>
+                <div class="grid grid-cols-3 md:grid-cols-5 gap-3 max-h-[320px] overflow-y-auto p-1">
+                    ${cartasMujerPozo.map((c, idx) => {
+                        const seleccionada = elegidas.includes(idx);
+                        return `
+                            <button onclick="intercambioElegirCarta(${idx})" class="relative group">
+                                <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
+                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border ${seleccionada ? 'border-sky-600 ring-2 ring-sky-600' : 'border-slate-200'} group-hover:border-slate-900 transition-all">
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    function intercambioElegirCarta(idx) {
+        const elegidas = state.intercambioElegidas || [];
+        const pos = elegidas.indexOf(idx);
+        if (pos >= 0) {
+            elegidas.splice(pos, 1);
+        } else {
+            if (elegidas.length >= 2) return;
+            elegidas.push(idx);
+        }
+        state.intercambioElegidas = elegidas;
+        if (elegidas.length === 2) {
+            // Tomar las 2 cartas y pasarlas al jugador
+            const jug = state.jugadores[state.turnoActual];
+            const cartasMujerPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
+            const aTomar = elegidas.map(i => cartasMujerPozo[i]);
+            aTomar.forEach(c => {
+                const pIdx = state.pozo.indexOf(c);
+                if (pIdx >= 0) state.pozo.splice(pIdx, 1);
+                jug.cartas.push(c);
+            });
+            state.intercambioElegidas = null;
+            finTurnoMensaje(`Intercambio completado: ganaste 2 cartas del pozo.`);
+        } else {
+            mostrarIntercambioElegirPozo();
+        }
+    }
+
+    function finTurnoMensaje(msg) {
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="text-center py-12 fade-in">
+                <p class="text-slate-700 font-medium text-lg mb-8 max-w-xl mx-auto">${msg}</p>
+                <button onclick="siguienteTurno()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    Siguiente jugador
+                </button>
+            </div>
+        `;
+    }
+
+    // ============================================================
+    // FLUJO DE TURNOS
+    // ============================================================
+    function turnoExtra() {
+        state.cartaActual = null;
+        state.preguntasEstado = null;
+        renderTurno();
+    }
+
+    function siguienteTurno() {
+        state.cartaActual = null;
+        state.preguntasEstado = null;
+        state.turnoActual = (state.turnoActual + 1) % state.numJugadores;
+
+        // Si el próximo jugador tiene skipSiguiente por opción riesgo fallida, consumimos el flag y saltamos
+        const prox = state.jugadores[state.turnoActual];
+        if (prox.skipSiguiente) {
+            prox.skipSiguiente = false;
+            const zona = document.getElementById('zona-accion');
+            document.getElementById('turno-nombre').innerText = prox.nombre;
+            document.getElementById('mazo-count').innerText = state.mazo.length;
+            renderScoreBoard();
+            zona.innerHTML = `
+                <div class="text-center py-12 fade-in">
+                    <p class="text-xs font-medium text-amber-600 uppercase tracking-wider mb-4">Riesgo fallado</p>
+                    <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-3">Turno salteado</h3>
+                    <p class="text-slate-500 font-medium mb-8">
+                        <span class="text-slate-900 font-semibold">${prox.nombre}</span> pierde el turno por el riesgo fallado anterior.
+                    </p>
+                    <button onclick="avanzarTrasSkipRiesgo()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Continuar
+                    </button>
+                </div>
+            `;
+            return;
+        }
+        renderTurno();
+    }
+
+    function avanzarTrasSkipRiesgo() {
+        state.turnoActual = (state.turnoActual + 1) % state.numJugadores;
+        renderTurno();
+    }
+
+    // ============================================================
+    // FIN DE PARTIDA
+    // ============================================================
+    function mostrarFinPartida() {
+        mostrarVista('vista-fin');
+        const ordenados = [...state.jugadores].sort((a,b) => b.cartas.length - a.cartas.length);
+        const ganador = ordenados[0];
+        const div = document.getElementById('ranking-final');
+        div.innerHTML = ordenados.map((j, i) => {
+            const pos = i + 1;
+            const destacado = j === ganador;
+            return `
+                <div class="flex items-center justify-between p-5 rounded-2xl ${destacado ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200'}">
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium ${destacado ? 'text-white/60' : 'text-slate-400'} tabular-nums">${String(pos).padStart(2, '0')}</span>
+                        <span class="font-black italic uppercase tracking-tighter text-xl ${destacado ? '' : 'text-slate-950'}">${j.nombre}</span>
+                    </div>
+                    <span class="font-semibold tabular-nums text-lg ${destacado ? 'bg-white/15 px-4 py-1 rounded-full' : 'text-slate-500'}">${j.cartas.length} carta${j.cartas.length === 1 ? '' : 's'}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function reiniciar() {
+        state.modo = null;
+        state.jugadores = [];
+        state.turnoActual = 0;
+        state.mazo = [];
+        state.pozo = [];
+        state.cartaActual = null;
+        state.skipNext = false;
+        mostrarVista('vista-modo');
+    }
+
+    function abandonar() {
+        if (confirm('¿Abandonar la partida actual? Se perderá el progreso.')) {
+            reiniciar();
+        }
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    cargarDatos().then(() => {
+        mostrarVista('vista-modo');
+    }).catch(err => {
+        console.error('Error cargando datos:', err);
+        document.body.innerHTML = '<div style="padding:40px;text-align:center;font-family:Inter,sans-serif"><h1>Error</h1><p>No se pudo cargar data/mujeres.json o data/trucos.json.</p><a href="index.html">← Volver al mazo</a></div>';
+    });
+    </script>
+</body>
+</html>

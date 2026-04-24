@@ -22,3 +22,6 @@ dist/
 # Fuentes de datos (no deployables)
 /*.xlsx
 /*.docx
+
+# Archivos temporales de validación
+*.tmp

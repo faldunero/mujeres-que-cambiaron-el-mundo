@@ -69,7 +69,7 @@
                 </section>
             </div>
 
-            <button onclick="toggleModal()" class="mt-10 w-full bg-slate-900 text-white font-black py-5 rounded-2xl hover:bg-indigo-600 transition-all uppercase tracking-widest text-sm shadow-xl shadow-indigo-100">
+            <button onclick="toggleModal()" class="mt-10 w-full bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
                 Cerrar y volver al mazo
             </button>
         </div>
@@ -89,10 +89,16 @@
                 <h1 class="text-6xl font-black italic tracking-tighter uppercase text-slate-950"></h1>
                 <p class="text-slate-400 text-lg font-medium"></p>
             </div>
-            <div class="relative w-full md:w-96">
-                <input type="text" id="searchInput" oninput="filtrarBusqueda()" 
-                    placeholder="Buscar por nombre o país..." 
-                    class="w-full bg-white border border-slate-200 rounded-2xl py-4 px-6 shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none text-slate-800 font-bold transition-all">
+            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                <div class="relative w-full sm:w-80">
+                    <input type="text" id="searchInput" oninput="filtrarBusqueda()"
+                        placeholder="Buscar por nombre o país..."
+                        class="w-full bg-white border border-slate-200 rounded-2xl py-4 px-6 shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none text-slate-800 font-bold transition-all">
+                </div>
+                <a href="juego.html"
+                   class="shrink-0 inline-flex items-center justify-center bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors whitespace-nowrap">
+                    A jugar
+                </a>
             </div>
         </header>
 
@@ -101,8 +107,8 @@
                 <table class="w-full border-collapse">
                     <thead class="bg-slate-50">
                         <tr class="text-left text-slate-400 uppercase text-[10px] tracking-widest border-b border-slate-200">
-                            <th class="p-6">ID Corto</th>
                             <th class="p-6">Nombre</th>
+                            <th class="p-6">Profesión</th>
                             <th class="p-6">País</th>
                             <th class="p-6 text-center">Continente</th>
                         </tr>
@@ -118,10 +124,12 @@
                         <img id="prev-img" src="" alt="Vista previa" class="relative rounded-2xl w-full shadow-2xl border border-white/10 aspect-[2/3] object-cover">
                     </div>
                     <h3 id="prev-name" class="text-3xl font-black italic uppercase leading-none mb-2 text-slate-900">---</h3>
-                    <div class="flex items-center gap-2">
+                    <p id="prev-prof" class="text-sm font-bold text-indigo-600 mb-3">---</p>
+                    <div class="flex items-center gap-2 mb-4">
                         <span id="prev-flag" class="text-xl"></span>
                         <span id="prev-cont" class="inline-block text-[10px] font-black tracking-[0.2em] text-indigo-600 uppercase bg-indigo-50 px-4 py-1.5 rounded-full">---</span>
                     </div>
+                    <p id="prev-fama" class="text-xs text-slate-600 italic leading-snug border-l-2 border-indigo-200 pl-3">---</p>
                     <p class="mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Ver detalle completo →</p>
                 </div>
             </aside>
@@ -132,8 +140,8 @@
                 <h2 class="text-4xl font-black italic uppercase mb-4 tracking-tighter">Guía de Juego</h2>
                 <p class="text-indigo-200 leading-relaxed font-medium">Aprende las reglas, domina los hitos históricos y compite con tus amigos.</p>
             </div>
-            <button onclick="toggleModal()" class="shrink-0 bg-white text-indigo-950 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm hover:scale-105 transition-transform shadow-lg shadow-white/10">
-                Ver instrucciones completas →
+            <button onclick="toggleModal()" class="shrink-0 bg-white text-indigo-950 hover:bg-indigo-100 px-6 py-3 rounded-full font-medium text-sm transition-colors">
+                Ver instrucciones completas
             </button>
         </section>
 
@@ -159,83 +167,16 @@
 
     <script>
         let idActual = "";
-        const banderas = { "Chile": "🇨🇱", "México": "🇲🇽", "Argentina": "🇦🇷", "España": "🇪🇸", "Polonia": "🇵🇱", "Pakistán": "🇵🇰", "Egipto": "🇪🇬", "Francia": "🇫🇷", "Reino Unido": "🇬🇧", "Rusia": "🇷🇺", "Alemania": "🇩🇪", "India": "🇮🇳", "Austria": "🇦🇹", "Guatemala": "🇬🇹", "Cuba": "🇨🇺", "Ecuador": "🇪🇨", "Bolivia": "🇧🇴", "Brasil": "🇧🇷", "Honduras": "🇭🇳", "Venezuela": "🇻🇪", "EE.UU.": "🇺🇸" };
+        let mujeresData = [];
+        let trucosData = [];
+        const banderas = { "Chile": "🇨🇱", "México": "🇲🇽", "Argentina": "🇦🇷", "España": "🇪🇸", "Polonia": "🇵🇱", "Pakistán": "🇵🇰", "Egipto": "🇪🇬", "Francia": "🇫🇷", "Reino Unido": "🇬🇧", "Rusia": "🇷🇺", "Alemania": "🇩🇪", "India": "🇮🇳", "Austria": "🇦🇹", "Guatemala": "🇬🇹", "Cuba": "🇨🇺", "Ecuador": "🇪🇨", "Bolivia": "🇧🇴", "Brasil": "🇧🇷", "Honduras": "🇭🇳", "Venezuela": "🇻🇪", "EE.UU.": "🇺🇸", "España / Chile": "🇪🇸", "Polonia / Francia": "🇵🇱", "EE.UU. / México": "🇺🇸", "Alemania / Holanda": "🇩🇪", "Austria / EE.UU.": "🇦🇹" };
 
-        const mujeresData = [
-            { id: "ID_01_carta_gabriela_mistral", nombre: "Gabriela Mistral", cont: "América", pais: "Chile" },
-            { id: "ID_02_carta_violeta_parra", nombre: "Violeta Parra", cont: "América", pais: "Chile" },
-            { id: "ID_03_carta_michelle_bachelet", nombre: "Michelle Bachelet", cont: "América", pais: "Chile" },
-            { id: "ID_04_carta_eloisa_diaz", nombre: "Eloísa Díaz", cont: "América", pais: "Chile" },
-            { id: "ID_05_carta_isabel_allende", nombre: "Isabel Allende", cont: "América", pais: "Chile" },
-            { id: "ID_06_carta_gladys_marin", nombre: "Gladys Marín", cont: "América", pais: "Chile" },
-            { id: "ID_07_carta_elena_caffarena", nombre: "Elena Caffarena", cont: "América", pais: "Chile" },
-            { id: "ID_08_carta_christiane_endler", nombre: "Christiane Endler", cont: "América", pais: "Chile" },
-            { id: "ID_09_carta_marlene_ahrens", nombre: "Marlene Ahrens", cont: "América", pais: "Chile" },
-            { id: "ID_10_carta_maria_teresa_ruiz", nombre: "María Teresa Ruiz", cont: "América", pais: "Chile" },
-            { id: "ID_11_carta_anita_lizana", nombre: "Anita Lizana", cont: "América", pais: "Chile" },
-            { id: "ID_12_carta_javiera_carrera", nombre: "Javiera Carrera", cont: "América", pais: "Chile" },
-            { id: "ID_13_carta_marcela_paz", nombre: "Marcela Paz", cont: "América", pais: "Chile" },
-            { id: "ID_14_carta_mon_laferte", nombre: "Mon Laferte", cont: "América", pais: "Chile" },
-            { id: "ID_15_carta_ines_de_suarez", nombre: "Inés de Suárez", cont: "Europa", pais: "España" },
-            { id: "ID_16_carta_margot_loyola", nombre: "Margot Loyola", cont: "América", pais: "Chile" },
-            { id: "ID_17_carta_cecilia_pantoja", nombre: "Cecilia Pantoja", cont: "América", pais: "Chile" },
-            { id: "ID_18_carta_francisca_crovetto", nombre: "Francisca Crovetto", cont: "América", pais: "Chile" },
-            { id: "ID_19_carta_paz_errazuriz", nombre: "Paz Errázuriz", cont: "América", pais: "Chile" },
-            { id: "ID_20_carta_justicia_espada", nombre: "Justicia Espada", cont: "América", pais: "Chile" },
-            { id: "ID_21_carta_marta_brunet", nombre: "Marta Brunet", cont: "América", pais: "Chile" },
-            { id: "ID_22_carta_amanda_labarca", nombre: "Amanda Labarca", cont: "América", pais: "Chile" },
-            { id: "ID_23_carta_lenka_franulic", nombre: "Lenka Franulic", cont: "América", pais: "Chile" },
-            { id: "ID_24_carta_matilde_perez", nombre: "Matilde Pérez", cont: "América", pais: "Chile" },
-            { id: "ID_25_carta_eliana_busch", nombre: "Eliana Busch", cont: "América", pais: "Chile" },
-            { id: "ID_26_carta_sola_sierra", nombre: "Sola Sierra", cont: "América", pais: "Chile" },
-            { id: "ID_27_carta_diamela_eltit", nombre: "Diamela Eltit", cont: "América", pais: "Chile" },
-            { id: "ID_28_carta_adriana_valdes", nombre: "Adriana Valdés", cont: "América", pais: "Chile" },
-            { id: "ID_29_carta_rosario_orrego", nombre: "Rosario Orrego", cont: "América", pais: "Chile" },
-            { id: "ID_30_carta_barbara_riveros", nombre: "Bárbara Riveros", cont: "América", pais: "Chile" },
-            { id: "ID_31_carta_frida_kahlo", nombre: "Frida Kahlo", cont: "América", pais: "México" },
-            { id: "ID_32_carta_eva_peron", nombre: "Eva Perón", cont: "América", pais: "Argentina" },
-            { id: "ID_33_carta_rigoberta_menchu", nombre: "Rigoberta Menchú", cont: "América", pais: "Guatemala" },
-            { id: "ID_34_carta_mercedes_sosa", nombre: "Mercedes Sosa", cont: "América", pais: "Argentina" },
-            { id: "ID_35_carta_sor_juana_ines_de_la_cruz", nombre: "Sor Juana Inés de la Cruz", cont: "América", pais: "México" },
-            { id: "ID_36_carta_celia_cruz", nombre: "Celia Cruz", cont: "América", pais: "Cuba" },
-            { id: "ID_37_carta_manuela_saenz", nombre: "Manuela Sáenz", cont: "América", pais: "Ecuador" },
-            { id: "ID_38_carta_juana_azurduy", nombre: "Juana Azurduy", cont: "América", pais: "Bolivia" },
-            { id: "ID_39_carta_carmen_miranda", nombre: "Carmen Miranda", cont: "América", pais: "Brasil" },
-            { id: "ID_40_carta_maria_felix", nombre: "María Félix", cont: "América", pais: "México" },
-            { id: "ID_41_carta_alfonsina_storni", nombre: "Alfonsina Storni", cont: "América", pais: "Argentina" },
-            { id: "ID_42_carta_berta_caceres", nombre: "Berta Cáceres", cont: "América", pais: "Honduras" },
-            { id: "ID_43_carta_carolina_herrera", nombre: "Carolina Herrera", cont: "América", pais: "Venezuela" },
-            { id: "ID_44_carta_ellen_ochoa", nombre: "Ellen Ochoa", cont: "América", pais: "EE.UU." },
-            { id: "ID_45_carta_gilda", nombre: "Gilda", cont: "América", pais: "Argentina" },
-            { id: "ID_46_carta_marie_curie", nombre: "Marie Curie", cont: "Europa", pais: "Polonia" },
-            { id: "ID_47_carta_malala_yousafzai", nombre: "Malala Yousafzai", cont: "Asia", pais: "Pakistán" },
-            { id: "ID_48_carta_cleopatra_vii", nombre: "Cleopatra VII", cont: "África", pais: "Egipto" },
-            { id: "ID_49_carta_juana_de_arco", nombre: "Juana de Arco", cont: "Europa", pais: "Francia" },
-            { id: "ID_50_carta_ada_lovelace", nombre: "Ada Lovelace", cont: "Europa", pais: "Reino Unido" },
-            { id: "ID_51_carta_rosa_parks", nombre: "Rosa Parks", cont: "América", pais: "EE.UU." },
-            { id: "ID_52_carta_valentina_tereshkova", nombre: "Valentina Tereshkova", cont: "Europa", pais: "Rusia" },
-            { id: "ID_53_carta_anne_frank", nombre: "Anne Frank", cont: "Europa", pais: "Alemania" },
-            { id: "ID_54_carta_virginia_woolf", nombre: "Virginia Woolf", cont: "Europa", pais: "Reino Unido" },
-            { id: "ID_55_carta_simone_de_beauvoir", nombre: "Simone de Beauvoir", cont: "Europa", pais: "Francia" },
-            { id: "ID_56_carta_margaret_thatcher", nombre: "Margaret Thatcher", cont: "Europa", pais: "Reino Unido" },
-            { id: "ID_57_carta_indira_gandhi", nombre: "Indira Gandhi", cont: "Asia", pais: "India" },
-            { id: "ID_58_carta_amelia_earhart", nombre: "Amelia Earhart", cont: "América", pais: "EE.UU." },
-            { id: "ID_59_carta_florence_nightingale", nombre: "Florence Nightingale", cont: "Europa", pais: "Reino Unido" },
-            { id: "ID_60_carta_hedy_lamarr", nombre: "Hedy Lamarr", cont: "Europa", pais: "Austria" }
-        ];
-
-        const trucosData = [
-            { id: "truco_01_censura",      tipo: "Censura",              efecto: "El siguiente jugador pierde su turno.",                               estilo: "bg-rose-50 text-rose-700 border-rose-100" },
-            { id: "truco_02_censura",      tipo: "Censura",              efecto: "El siguiente jugador pierde su turno.",                               estilo: "bg-rose-50 text-rose-700 border-rose-100" },
-            { id: "truco_03_censura",      tipo: "Censura",              efecto: "El siguiente jugador pierde su turno.",                               estilo: "bg-rose-50 text-rose-700 border-rose-100" },
-            { id: "truco_04_exilio",       tipo: "Exilio de puntos",     efecto: "Elige a un oponente: debe devolver 1 carta ganada al pozo.",           estilo: "bg-amber-50 text-amber-700 border-amber-100" },
-            { id: "truco_05_exilio",       tipo: "Exilio de puntos",     efecto: "Elige a un oponente: debe devolver 1 carta ganada al pozo.",           estilo: "bg-amber-50 text-amber-700 border-amber-100" },
-            { id: "truco_06_exilio",       tipo: "Exilio de puntos",     efecto: "Elige a un oponente: debe devolver 1 carta ganada al pozo.",           estilo: "bg-amber-50 text-amber-700 border-amber-100" },
-            { id: "truco_07_inspiracion",  tipo: "Inspiración Extra",    efecto: "Saca otra carta y juega un turno inmediato.",                          estilo: "bg-emerald-50 text-emerald-700 border-emerald-100" },
-            { id: "truco_08_inspiracion",  tipo: "Inspiración Extra",    efecto: "Saca otra carta y juega un turno inmediato.",                          estilo: "bg-emerald-50 text-emerald-700 border-emerald-100" },
-            { id: "truco_09_intercambio",  tipo: "Intercambio Cultural", efecto: "Intercambia una de tus cartas ganadas por 2 cartas del pozo.",         estilo: "bg-sky-50 text-sky-700 border-sky-100" },
-            { id: "truco_10_intercambio",  tipo: "Intercambio Cultural", efecto: "Intercambia una de tus cartas ganadas por 2 cartas del pozo.",         estilo: "bg-sky-50 text-sky-700 border-sky-100" }
-        ];
+        function flagOf(pais) {
+            if (banderas[pais]) return banderas[pais];
+            // si el país es combinado, usar bandera del primero
+            const first = (pais || '').split('/')[0].trim();
+            return banderas[first] || '🏳️';
+        }
 
         function renderTrucos() {
             const grid = document.getElementById('trucos-grid');
@@ -262,14 +203,15 @@
         function renderTable(data) {
             const grid = document.getElementById('data-grid');
             grid.innerHTML = data.map(m => {
-                const soloID = m.id.split('_')[0] + "_" + m.id.split('_')[1];
+                const profSafe = (m.prof || '').replace(/"/g, '&quot;');
+                const famaSafe = (m.fama || '').replace(/"/g, '&quot;');
                 return `
-                <tr onclick="window.location.href='detalle.html?id=${m.id}'" 
-                    onmouseover="updatePreview('${m.id}', '${m.nombre}', '${m.cont}', '${m.pais}')"
+                <tr onclick="window.location.href='detalle.html?id=${m.id}'"
+                    onmouseover="updatePreview('${m.id}', '${m.nombre.replace(/'/g, "\\'")}', '${m.cont}', '${m.pais}', '${profSafe.replace(/'/g, "\\'")}', '${famaSafe.replace(/'/g, "\\'")}')"
                     class="cursor-pointer hover:bg-indigo-50/50 transition-colors border-b border-slate-50 group">
-                    <td class="p-6 font-mono text-slate-400 text-xs">${soloID}</td>
                     <td class="p-6 font-bold text-slate-800">${m.nombre}</td>
-                    <td class="p-6 text-slate-500 font-medium">${banderas[m.pais] || '🏳️'} ${m.pais}</td>
+                    <td class="p-6 text-slate-500 font-medium text-sm">${m.prof || ''}</td>
+                    <td class="p-6 text-slate-500 font-medium">${flagOf(m.pais)} ${m.pais}</td>
                     <td class="p-6 text-center">
                         <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-slate-100 text-slate-500 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                             ${m.cont}
@@ -279,12 +221,14 @@
             }).join('');
         }
 
-        function updatePreview(id, nombre, cont, pais) {
+        function updatePreview(id, nombre, cont, pais, prof, fama) {
             idActual = id;
             document.getElementById('prev-img').src = `Set_Completo_60_Tarjetas_Mujeres/${id}.png`;
             document.getElementById('prev-name').innerText = nombre;
+            document.getElementById('prev-prof').innerText = prof || '';
             document.getElementById('prev-cont').innerText = cont;
-            document.getElementById('prev-flag').innerText = banderas[pais] || "🏳️";
+            document.getElementById('prev-flag').innerText = flagOf(pais);
+            document.getElementById('prev-fama').innerText = fama || '';
             document.getElementById('preview-panel').classList.remove('opacity-0', 'translate-y-4');
         }
 
@@ -292,10 +236,30 @@
 
         function filtrarBusqueda() {
             const val = document.getElementById('searchInput').value.toLowerCase();
-            renderTable(mujeresData.filter(m => m.nombre.toLowerCase().includes(val) || m.pais.toLowerCase().includes(val)));
+            renderTable(mujeresData.filter(m =>
+                m.nombre.toLowerCase().includes(val) ||
+                (m.pais || '').toLowerCase().includes(val) ||
+                (m.prof || '').toLowerCase().includes(val)
+            ));
         }
 
-        window.onload = () => { renderTable(mujeresData); renderTrucos(); };
+        async function cargarDatos() {
+            try {
+                const [mRes, tRes] = await Promise.all([
+                    fetch('data/mujeres.json'),
+                    fetch('data/trucos.json')
+                ]);
+                mujeresData = await mRes.json();
+                trucosData = await tRes.json();
+                renderTable(mujeresData);
+                renderTrucos();
+            } catch (err) {
+                console.error('Error cargando datos:', err);
+                document.getElementById('data-grid').innerHTML = '<tr><td colspan="4" class="p-12 text-center text-slate-400">Error cargando datos. Revisa que data/mujeres.json y data/trucos.json estén disponibles.</td></tr>';
+            }
+        }
+
+        window.onload = cargarDatos;
     </script>
 </body>
 </html>
