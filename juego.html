@@ -680,6 +680,23 @@
             : t.estilo.includes('emerald') ? 'text-emerald-600'
             : 'text-sky-600';
 
+        const cartasMujerPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
+        const puedeDesafio = cartasMujerPozo.length > 0;
+
+        const botonera = puedeDesafio
+            ? `<div class="flex flex-col sm:flex-row gap-3 justify-center max-w-xl mx-auto">
+                    <button onclick="intentarDesafio()" class="bg-ludo-cian hover:opacity-90 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors shadow-md shadow-ludo-cian/30">
+                        Intentar Desafío Histórico
+                    </button>
+                    <button onclick="aplicarTruco()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Aplicar efecto directo
+                    </button>
+                </div>
+                <p class="text-xs text-slate-400 mt-4 max-w-md mx-auto">Antes del truco podés recuperar una carta del pozo si aciertas su hito. Si fallás, el truco se aplica igual.</p>`
+            : `<button onclick="aplicarTruco()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    Aplicar efecto
+                </button>`;
+
         zona.innerHTML = `
             <div class="text-center py-6 fade-in">
                 <div class="flex justify-center mb-6">
@@ -689,8 +706,112 @@
                 <p class="text-xs font-medium uppercase tracking-wider mb-2 ${colorClass}">Carta de truco</p>
                 <h3 class="text-4xl font-black italic uppercase tracking-tighter mb-2 text-slate-950">${t.tipo}</h3>
                 <p class="text-slate-600 font-medium mb-8 max-w-md mx-auto">${t.efecto}</p>
+                ${botonera}
+            </div>
+        `;
+    }
+
+    // ============================================================
+    // DESAFÍO HISTÓRICO (regla opcional previa al truco)
+    // ============================================================
+    function intentarDesafio() {
+        const cartasMujerPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="py-8 fade-in">
+                <div class="text-center mb-6">
+                    <p class="text-xs font-medium uppercase tracking-wider mb-2" style="color:#43C6AC">Desafío Histórico · Paso 1 de 2</p>
+                    <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-2">Elige una carta del pozo</h3>
+                    <p class="text-slate-500 text-sm font-medium max-w-md mx-auto">Tendrás que decir en voz alta su hito o logro principal. Si aciertas, te la llevas como punto extra.</p>
+                </div>
+                <div class="grid grid-cols-3 md:grid-cols-5 gap-3 max-h-[320px] overflow-y-auto p-1 mb-6">
+                    ${cartasMujerPozo.map((c, idx) => `
+                        <button onclick="elegirCartaDesafio(${idx})" class="group text-left">
+                            <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
+                                 class="rounded-xl w-full aspect-[2/3] object-cover shadow border border-slate-200 group-hover:border-ludo-cian group-hover:shadow-lg transition-all mb-1">
+                            <p class="text-xs font-semibold text-slate-700 leading-tight">${c.nombre}</p>
+                            <p class="text-[10px] text-slate-400 font-medium">${c.pais}</p>
+                        </button>
+                    `).join('')}
+                </div>
+                <div class="flex justify-center">
+                    <button onclick="cancelarDesafio()" class="text-slate-500 hover:text-slate-900 text-sm font-medium">
+                        Cancelar y aplicar truco
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function cancelarDesafio() {
+        state.desafioCarta = null;
+        mostrarTruco(state.cartaActual);
+    }
+
+    function elegirCartaDesafio(idx) {
+        const cartasMujerPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
+        state.desafioCarta = cartasMujerPozo[idx];
+        const c = state.desafioCarta;
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="py-10 text-center fade-in">
+                <p class="text-xs font-medium uppercase tracking-wider mb-3" style="color:#43C6AC">Desafío Histórico · Paso 2 de 2</p>
+                <div class="flex justify-center mb-6">
+                    <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
+                         class="rounded-2xl shadow-xl w-40 aspect-[2/3] object-cover border border-slate-200">
+                </div>
+                <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-2">${c.nombre}</h3>
+                <p class="text-slate-500 text-sm font-medium mb-6">${c.pais} · ${c.prof}</p>
+                <p class="text-slate-700 font-medium mb-8 max-w-md mx-auto">Di en voz alta cuál es su <b>hito o logro principal</b>.</p>
+                <button onclick="revelarHitoDesafio()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    Ver respuesta
+                </button>
+            </div>
+        `;
+    }
+
+    function revelarHitoDesafio() {
+        const c = state.desafioCarta;
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="py-10 text-center fade-in">
+                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-3">Hito o logro principal de</p>
+                <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-4 text-slate-950">${c.nombre}</h3>
+                <p class="text-lg font-medium text-slate-700 mb-8 max-w-xl mx-auto">${c.fama}</p>
+                <div class="flex gap-3 justify-center">
+                    <button onclick="resolverDesafio(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Acerté
+                    </button>
+                    <button onclick="resolverDesafio(false)" class="bg-rose-600 hover:bg-rose-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Fallé
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function resolverDesafio(acerto) {
+        const jug = state.jugadores[state.turnoActual];
+        const c = state.desafioCarta;
+        let mensaje;
+        if (acerto) {
+            const pIdx = state.pozo.indexOf(c);
+            if (pIdx >= 0) state.pozo.splice(pIdx, 1);
+            jug.cartas.push(c);
+            mensaje = `<span class="text-emerald-600 font-semibold">¡Acertaste!</span> ${jug.nombre} recupera <b>${c.nombre}</b> como punto extra. Ahora se aplica el efecto del truco.`;
+        } else {
+            mensaje = `<span class="text-rose-600 font-semibold">Fallaste el desafío.</span> Se aplica el efecto del truco igual.`;
+        }
+        state.desafioCarta = null;
+        actualizarContadores();
+        renderScoreBoard();
+        const zona = document.getElementById('zona-accion');
+        zona.innerHTML = `
+            <div class="py-10 text-center fade-in">
+                <p class="text-xs font-medium uppercase tracking-wider mb-4" style="color:#43C6AC">Desafío Histórico</p>
+                <p class="text-slate-700 font-medium text-lg mb-8 max-w-xl mx-auto">${mensaje}</p>
                 <button onclick="aplicarTruco()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
-                    Aplicar efecto
+                    Aplicar efecto del truco
                 </button>
             </div>
         `;
