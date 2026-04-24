@@ -651,134 +651,26 @@
     // FLUJO: CARTA DE TRUCO
     // ============================================================
     function mostrarTruco(t) {
-        const jug = state.jugadores[state.turnoActual];
-        const tipo = t.tipo;
-
         const zona = document.getElementById('zona-accion');
-
-        // Imagen del truco
-        const imgHtml = `
-            <div class="flex justify-center mb-6">
-                <img src="Cartas_de_Truco_Estandarizadas/${t.id}.png" alt="${t.tipo}"
-                     class="rounded-3xl shadow-2xl w-48 aspect-[2/3] object-cover border border-slate-200">
-            </div>
-        `;
-
-        // Header común
-        const header = `
-            <p class="text-xs font-medium uppercase tracking-wider mb-2 ${t.estilo.includes('rose') ? 'text-rose-600' : t.estilo.includes('amber') ? 'text-amber-600' : t.estilo.includes('emerald') ? 'text-emerald-600' : 'text-sky-600'}">Carta de truco</p>
-            <h3 class="text-4xl font-black italic uppercase tracking-tighter mb-2 text-slate-950">${t.tipo}</h3>
-            <p class="text-slate-600 font-medium mb-6">${t.efecto}</p>
-        `;
-
-        // Desafío de recuperación opcional (antes del efecto)
-        const desafioDisponible = state.pozo.length > 0;
-        const desafioHtml = desafioDisponible ? `
-            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 text-left">
-                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-2">Regla opcional</p>
-                <p class="text-sm text-slate-700 font-medium mb-3">Antes de aplicar el efecto, ${jug.nombre} puede intentar un <b>Desafío de Recuperación</b>: nombrar el hito de una carta del pozo para recuperarla.</p>
-                <div class="flex gap-2 flex-wrap">
-                    <button onclick="iniciarDesafioRecuperacion()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-2 px-5 rounded-full text-sm transition-colors">
-                        Intentar desafío
-                    </button>
-                    <button onclick="aplicarTruco()" class="bg-white border border-slate-200 hover:border-slate-900 text-slate-700 font-medium py-2 px-5 rounded-full text-sm transition-colors">
-                        Saltar y aplicar efecto
-                    </button>
-                </div>
-            </div>
-        ` : '';
+        const colorClass = t.estilo.includes('rose') ? 'text-rose-600'
+            : t.estilo.includes('amber') ? 'text-amber-600'
+            : t.estilo.includes('emerald') ? 'text-emerald-600'
+            : 'text-sky-600';
 
         zona.innerHTML = `
             <div class="text-center py-6 fade-in">
-                ${imgHtml}
-                ${header}
-                ${desafioHtml}
-                ${!desafioDisponible ? `
-                    <button onclick="aplicarTruco()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
-                        Aplicar efecto
-                    </button>
-                ` : ''}
-            </div>
-        `;
-    }
-
-    function iniciarDesafioRecuperacion() {
-        const zona = document.getElementById('zona-accion');
-        zona.innerHTML = `
-            <div class="py-6 fade-in">
-                <div class="text-center mb-6">
-                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-2">Desafío de Recuperación</p>
-                    <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-3">Elige una carta del pozo</h3>
-                    <p class="text-slate-600 font-medium">Di en voz alta el hito principal de la carta elegida.</p>
-                </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 max-h-[340px] overflow-y-auto p-1">
-                    ${state.pozo.filter(c => c.tipoCarta === 'mujer').map((c, idx) => `
-                        <button onclick="desafiarCarta(${idx})" class="group relative">
-                            <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
-                                 class="rounded-xl w-full aspect-[2/3] object-cover shadow border border-slate-200 group-hover:border-slate-900 group-hover:shadow-lg transition-all">
-                        </button>
-                    `).join('')}
-                </div>
-                <div class="text-center mt-6">
-                    <button onclick="aplicarTruco()" class="text-slate-400 hover:text-slate-900 text-sm font-medium transition-colors">
-                        Cancelar desafío y aplicar truco
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-
-    function desafiarCarta(pozoIdx) {
-        const cartasMujerPozo = state.pozo.filter(c => c.tipoCarta === 'mujer');
-        const carta = cartasMujerPozo[pozoIdx];
-        state.desafioCarta = carta;
-        const zona = document.getElementById('zona-accion');
-        zona.innerHTML = `
-            <div class="text-center py-10 fade-in">
-                <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-3">Desafío de Recuperación</p>
                 <div class="flex justify-center mb-6">
-                    <img src="Set_Completo_60_Tarjetas_Mujeres/${carta.id}.png" alt="${carta.nombre}"
-                         class="rounded-2xl shadow-xl w-40 aspect-[2/3] object-cover border border-slate-200">
+                    <img src="Cartas_de_Truco_Estandarizadas/${t.id}.png" alt="${t.tipo}"
+                         class="rounded-3xl shadow-2xl w-48 aspect-[2/3] object-cover border border-slate-200">
                 </div>
-                <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-4">${carta.nombre}</h3>
-                <p class="text-slate-600 mb-8 font-medium">¿Cuál es su hito principal? Dilo en voz alta.</p>
-                <button onclick="verHitoDesafio()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
-                    Ver respuesta
+                <p class="text-xs font-medium uppercase tracking-wider mb-2 ${colorClass}">Carta de truco</p>
+                <h3 class="text-4xl font-black italic uppercase tracking-tighter mb-2 text-slate-950">${t.tipo}</h3>
+                <p class="text-slate-600 font-medium mb-8 max-w-md mx-auto">${t.efecto}</p>
+                <button onclick="aplicarTruco()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    Aplicar efecto
                 </button>
             </div>
         `;
-    }
-
-    function verHitoDesafio() {
-        const c = state.desafioCarta;
-        const zona = document.getElementById('zona-accion');
-        zona.innerHTML = `
-            <div class="text-center py-10 fade-in">
-                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-3">Hito principal</p>
-                <p class="text-2xl font-black italic leading-tight mb-8 text-slate-950 max-w-xl mx-auto">${c.fama}</p>
-                <div class="flex gap-3 justify-center flex-wrap">
-                    <button onclick="resolverDesafio(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
-                        Acerté (recuperar carta)
-                    </button>
-                    <button onclick="resolverDesafio(false)" class="bg-rose-600 hover:bg-rose-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
-                        Fallé
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-
-    function resolverDesafio(acerto) {
-        if (acerto) {
-            const jug = state.jugadores[state.turnoActual];
-            const c = state.desafioCarta;
-            // sacarla del pozo
-            const idx = state.pozo.indexOf(c);
-            if (idx >= 0) state.pozo.splice(idx, 1);
-            jug.cartas.push(c);
-        }
-        state.desafioCarta = null;
-        aplicarTruco();
     }
 
     function aplicarTruco() {
