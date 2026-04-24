@@ -94,12 +94,18 @@
             <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 mb-6 shadow-sm">
                 <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
                     <div>
-                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Turno actual</p>
+                        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Turno actual</p>
                         <h2 id="turno-nombre" class="text-3xl font-black italic uppercase tracking-tighter text-slate-950">---</h2>
                     </div>
-                    <div class="text-right">
-                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Cartas restantes</p>
-                        <p id="mazo-count" class="text-3xl font-black tabular-nums text-slate-800">--</p>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right">
+                            <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Mazo</p>
+                            <p id="mazo-count" class="text-2xl font-black tabular-nums text-slate-800">--</p>
+                        </div>
+                        <button onclick="verCartasPozo()" class="flex flex-col items-end bg-white border border-slate-200 hover:border-slate-900 rounded-2xl px-4 py-2 transition-colors" title="Ver cartas del pozo">
+                            <span class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-0.5">Pozo</span>
+                            <span id="pozo-count" class="text-2xl font-black tabular-nums text-slate-800">0</span>
+                        </button>
                     </div>
                 </div>
                 <div id="score-board" class="flex flex-wrap gap-2"></div>
@@ -140,7 +146,7 @@
         <div class="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-hidden flex flex-col">
             <div class="flex items-center justify-between px-8 py-6 border-b border-slate-100">
                 <div>
-                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Cartas ganadas</p>
+                    <p id="modal-cartas-etiqueta" class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Cartas</p>
                     <h3 id="modal-cartas-titulo" class="text-xl font-black italic uppercase tracking-tighter text-slate-950">---</h3>
                 </div>
                 <button onclick="cerrarModalCartas()" class="text-slate-400 hover:text-slate-900 transition-colors p-2" aria-label="Cerrar">
@@ -272,7 +278,15 @@
     // ============================================================
     // RENDERIZADO DEL TURNO
     // ============================================================
+    function actualizarContadores() {
+        const mazoEl = document.getElementById('mazo-count');
+        const pozoEl = document.getElementById('pozo-count');
+        if (mazoEl) mazoEl.innerText = state.mazo.length;
+        if (pozoEl) pozoEl.innerText = state.pozo.length;
+    }
+
     function renderScoreBoard() {
+        actualizarContadores();
         const sb = document.getElementById('score-board');
         sb.innerHTML = state.jugadores.map((j, i) => {
             const activo = i === state.turnoActual;
@@ -287,25 +301,69 @@
 
     function verCartasJugador(i) {
         const j = state.jugadores[i];
+        const etiqueta = j.cartas.length === 1 ? '1 carta' : `${j.cartas.length} cartas`;
+        abrirModalCartas({
+            etiqueta: 'Cartas ganadas',
+            titulo: `${j.nombre} · ${etiqueta}`,
+            cartas: j.cartas,
+            mensajeVacio: 'Este jugador aún no tiene cartas ganadas.'
+        });
+    }
+
+    function verCartasPozo() {
+        const cartasMujer = state.pozo.filter(c => c.tipoCarta === 'mujer');
+        const trucos = state.pozo.filter(c => c.tipoCarta === 'truco');
+        const etiqueta = state.pozo.length === 1 ? '1 carta' : `${state.pozo.length} cartas`;
+        abrirModalCartas({
+            etiqueta: 'Pozo',
+            titulo: `Pozo · ${etiqueta}`,
+            cartas: cartasMujer,
+            trucos: trucos,
+            mensajeVacio: 'El pozo está vacío.'
+        });
+    }
+
+    function abrirModalCartas({ etiqueta, titulo, cartas, trucos, mensajeVacio }) {
         const modal = document.getElementById('modal-cartas');
         const contenido = document.getElementById('modal-cartas-contenido');
-        const titulo = document.getElementById('modal-cartas-titulo');
-        titulo.innerText = `${j.nombre} · ${j.cartas.length} carta${j.cartas.length === 1 ? '' : 's'}`;
-        if (j.cartas.length === 0) {
-            contenido.innerHTML = `<p class="text-center text-slate-400 font-medium py-16">Este jugador aún no tiene cartas ganadas.</p>`;
+        const etiquetaEl = document.getElementById('modal-cartas-etiqueta');
+        const tituloEl = document.getElementById('modal-cartas-titulo');
+        etiquetaEl.innerText = etiqueta;
+        tituloEl.innerText = titulo;
+        const total = (cartas ? cartas.length : 0) + (trucos ? trucos.length : 0);
+        if (total === 0) {
+            contenido.innerHTML = `<p class="text-center text-slate-400 font-medium py-16">${mensajeVacio}</p>`;
         } else {
-            contenido.innerHTML = `
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    ${j.cartas.map(c => `
-                        <div class="group">
-                            <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
-                                 class="rounded-xl w-full aspect-[2/3] object-cover shadow border border-slate-200 mb-2">
-                            <p class="text-sm font-semibold text-slate-900 leading-tight">${c.nombre}</p>
-                            <p class="text-xs text-slate-500 font-medium">${c.pais}</p>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+            const secciones = [];
+            if (cartas && cartas.length > 0) {
+                secciones.push(`
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        ${cartas.map(c => `
+                            <div>
+                                <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
+                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border border-slate-200 mb-2">
+                                <p class="text-sm font-semibold text-slate-900 leading-tight">${c.nombre}</p>
+                                <p class="text-xs text-slate-500 font-medium">${c.pais}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `);
+            }
+            if (trucos && trucos.length > 0) {
+                secciones.push(`
+                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mt-6 mb-3">Trucos usados</p>
+                    <div class="grid grid-cols-3 md:grid-cols-5 gap-3">
+                        ${trucos.map(t => `
+                            <div>
+                                <img src="Cartas_de_Truco_Estandarizadas/${t.id}.png" alt="${t.tipo}"
+                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border border-slate-200 mb-2">
+                                <p class="text-xs font-semibold text-slate-700">${t.tipo}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `);
+            }
+            contenido.innerHTML = secciones.join('');
         }
         modal.classList.remove('hidden');
     }
@@ -360,8 +418,13 @@
     }
 
     function sacarCarta() {
+        if (state.mazo.length === 0) {
+            mostrarFinPartida();
+            return;
+        }
         const carta = state.mazo.shift();
         state.cartaActual = carta;
+        actualizarContadores();
         if (carta.tipoCarta === 'truco') {
             mostrarTruco(carta);
         } else {
@@ -729,15 +792,29 @@
             finTurnoMensaje(`${t.tipo} aplicado. El siguiente jugador perderá su turno.`);
         } else if (tipoKey === 'inspiracion') {
             state.pozo.push(t);
-            // Mismo jugador saca otra carta
+            actualizarContadores();
+            // Mismo jugador saca la siguiente carta del mazo inmediatamente
             const zona = document.getElementById('zona-accion');
+            if (state.mazo.length === 0) {
+                zona.innerHTML = `
+                    <div class="text-center py-12 fade-in">
+                        <p class="text-xs text-emerald-600 font-medium uppercase tracking-wider mb-4">Inspiración</p>
+                        <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-3">Mazo vacío</h3>
+                        <p class="text-slate-600 mb-8 font-medium">Ya no quedan cartas en el mazo. Terminá el turno.</p>
+                        <button onclick="siguienteTurno()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                            Siguiente jugador
+                        </button>
+                    </div>
+                `;
+                return;
+            }
             zona.innerHTML = `
                 <div class="text-center py-12 fade-in">
                     <p class="text-xs text-emerald-600 font-medium uppercase tracking-wider mb-4">Inspiración</p>
-                    <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-3">Juega otra vez</h3>
-                    <p class="text-slate-600 mb-8 font-medium">${state.jugadores[state.turnoActual].nombre} saca otra carta y juega de nuevo.</p>
+                    <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-3">Jugá otra vez</h3>
+                    <p class="text-slate-600 mb-8 font-medium max-w-md mx-auto">${state.jugadores[state.turnoActual].nombre} toma la siguiente carta del mazo (${state.mazo.length} restante${state.mazo.length === 1 ? '' : 's'}) y juega un turno inmediato.</p>
                     <button onclick="sacarCarta()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
-                        Sacar otra carta
+                        Revelar siguiente carta del mazo
                     </button>
                 </div>
             `;
