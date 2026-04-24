@@ -323,20 +323,38 @@
             <div class="text-center py-12 fade-in">
                 <p class="text-xs font-medium uppercase tracking-wider mb-3" style="color:#43C6AC">¡Se acabó el mazo!</p>
                 <h3 class="text-3xl md:text-4xl font-black italic uppercase tracking-tighter mb-4 text-slate-950">Fase del pozo</h3>
-                <p class="text-slate-600 font-medium mb-2 max-w-md mx-auto">Las <b>${state.mazo.length} carta${state.mazo.length === 1 ? '' : 's'}</b> que quedaron en el pozo entran a un nuevo mazo. Las cartas de truco no participan en esta fase.</p>
+                <p class="text-slate-600 font-medium mb-2 max-w-md mx-auto">La repesca es <b>opcional</b>: si la mesa quiere seguir, las <b>${state.mazo.length} carta${state.mazo.length === 1 ? '' : 's'}</b> del pozo entran a un nuevo mazo. Si prefieren cerrar la partida ahora, también pueden.</p>
                 <div class="bg-ludo-gris rounded-2xl p-5 max-w-md mx-auto my-6 text-left">
-                    <p class="text-xs font-bold text-ludo-azul uppercase tracking-widest mb-2">Reglas especiales</p>
+                    <p class="text-xs font-bold text-ludo-azul uppercase tracking-widest mb-2">Reglas de la repesca</p>
                     <ul class="text-sm text-slate-700 font-medium space-y-1.5">
                         <li>· Basta con <b>1 acierto</b> para quedarte con la carta.</li>
                         <li>· Si fallas todo, la carta vuelve al pozo. Sin penalización.</li>
                         <li>· No hay opción riesgo ni turno extra.</li>
+                        <li>· Las cartas de truco <b>no participan</b> (se descartan).</li>
                     </ul>
                 </div>
-                <button onclick="renderTurno()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
-                    Comenzar repesca
-                </button>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                    <button onclick="renderTurno()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        Comenzar repesca
+                    </button>
+                    <button onclick="saltarFasePozo()" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium py-3 px-6 rounded-full text-sm transition-colors" title="Termina la partida sin jugar la repesca. Gana quien tenga más cartas hasta ahora.">
+                        Terminar partida ahora
+                    </button>
+                </div>
             </div>
         `;
+    }
+
+    function saltarFasePozo() {
+        // Si la mesa decide no jugar la repesca, se cierra la partida con
+        // los puntajes actuales. fasePozo queda en true para que el
+        // contador siga mostrando "Repesca" si aún tuviera cartas, pero
+        // el mazo se vacía para que mostrarFinPartida no haga nada raro.
+        state.mazo = [];
+        state.pozo = [];
+        state.cartaActual = null;
+        state.preguntasEstado = null;
+        mostrarFinPartida();
     }
 
     // ============================================================
