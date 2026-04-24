@@ -5,9 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Jugar - Mujeres que Cambiaron el Mundo</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ludo-azul': '#0052D4',
+                        'ludo-azul-dark': '#003B9F',
+                        'ludo-cian': '#43C6AC',
+                        'ludo-gris': '#F1F5F9',
+                    },
+                    fontFamily: {
+                        'title': ['Montserrat', 'sans-serif'],
+                        'body': ['Poppins', 'sans-serif'],
+                        'sans': ['Poppins', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'ludo-gradient': 'linear-gradient(90deg, #0052D4 0%, #43C6AC 100%)',
+                    },
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; background: #F1F5F9; }
+        h1, h2, h3, h4, .font-title { font-family: 'Montserrat', sans-serif; }
         .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .card-flip { animation: flip 0.5s ease-out; }
@@ -19,7 +42,7 @@
     <!-- HEADER -->
     <div class="w-full bg-white border-b border-slate-100">
         <div class="max-w-[1400px] mx-auto h-[90px] flex items-center justify-between px-6">
-            <a href="index.html" class="text-slate-500 hover:text-slate-900 text-sm font-medium transition-colors">
+            <a href="index.html" class="text-slate-500 hover:text-ludo-azul text-sm font-medium transition-colors">
                 Volver al mazo
             </a>
             <img src="logo/logotipo.svg" alt="Ludolab" class="h-7 opacity-80">
@@ -35,7 +58,7 @@
                 <p class="text-slate-500 text-lg font-medium">Elige cómo querés jugar</p>
             </div>
             <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-                <button onclick="elegirModo('individual')" class="bg-white border border-slate-200 hover:border-slate-900 rounded-3xl p-10 text-left transition-colors">
+                <button onclick="elegirModo('individual')" class="bg-white border border-slate-200 hover:border-ludo-azul rounded-3xl p-10 text-left transition-colors">
                     <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">Modo 01</p>
                     <h2 class="text-2xl font-semibold tracking-tight mb-3 text-slate-900">Individual</h2>
                     <p class="text-slate-500 font-normal leading-relaxed mb-6 text-sm">Modo práctica solo. Estudia las 60 cartas adivinando país, profesión e hito de cada mujer.</p>
@@ -44,10 +67,10 @@
                         <li>Sin cartas de truco</li>
                         <li>Score personal al final</li>
                     </ul>
-                    <span class="inline-flex items-center justify-center bg-slate-900 text-white font-medium py-2.5 px-5 rounded-full text-sm">Empezar</span>
+                    <span class="inline-flex items-center justify-center bg-ludo-cian text-white font-semibold py-2.5 px-5 rounded-full text-sm shadow-md shadow-ludo-cian/30">Empezar</span>
                 </button>
 
-                <button onclick="elegirModo('multi')" class="bg-white border border-slate-200 hover:border-slate-900 rounded-3xl p-10 text-left transition-colors">
+                <button onclick="elegirModo('multi')" class="bg-white border border-slate-200 hover:border-ludo-azul rounded-3xl p-10 text-left transition-colors">
                     <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">Modo 02</p>
                     <h2 class="text-2xl font-semibold tracking-tight mb-3 text-slate-900">Multijugador</h2>
                     <p class="text-slate-500 font-normal leading-relaxed mb-6 text-sm">2 a 5 jugadores se turnan el dispositivo. Incluye cartas de truco para voltear el juego.</p>
@@ -56,7 +79,7 @@
                         <li>Censura, Exilio, Inspiración, Intercambio</li>
                         <li>Gana quien acumule más cartas</li>
                     </ul>
-                    <span class="inline-flex items-center justify-center bg-slate-900 text-white font-medium py-2.5 px-5 rounded-full text-sm">Empezar</span>
+                    <span class="inline-flex items-center justify-center bg-ludo-cian text-white font-semibold py-2.5 px-5 rounded-full text-sm shadow-md shadow-ludo-cian/30">Empezar</span>
                 </button>
             </div>
         </section>
@@ -78,10 +101,10 @@
                 <div id="inputs-jugadores" class="space-y-3 mb-8"></div>
 
                 <div class="flex gap-3">
-                    <button onclick="volverA('modo')" class="flex-1 bg-white border border-slate-200 hover:border-slate-900 text-slate-900 font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    <button onclick="volverA('modo')" class="flex-1 bg-white border border-slate-200 hover:border-ludo-azul text-slate-900 font-medium py-3 px-6 rounded-full text-sm transition-colors">
                         Volver
                     </button>
-                    <button id="btn-comenzar" onclick="comenzarPartida()" class="flex-1 bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    <button id="btn-comenzar" onclick="comenzarPartida()" class="flex-1 bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
                         Comenzar
                     </button>
                 </div>
@@ -102,7 +125,7 @@
                             <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Mazo</p>
                             <p id="mazo-count" class="text-2xl font-black tabular-nums text-slate-800">--</p>
                         </div>
-                        <button onclick="verCartasPozo()" class="flex flex-col items-end bg-white border border-slate-200 hover:border-slate-900 rounded-2xl px-4 py-2 transition-colors" title="Ver cartas del pozo">
+                        <button onclick="verCartasPozo()" class="flex flex-col items-end bg-white border border-slate-200 hover:border-ludo-azul rounded-2xl px-4 py-2 transition-colors" title="Ver cartas del pozo">
                             <span class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-0.5">Pozo</span>
                             <span id="pozo-count" class="text-2xl font-black tabular-nums text-slate-800">0</span>
                         </button>
@@ -115,7 +138,7 @@
             <div id="zona-accion" class="bg-white rounded-3xl border border-slate-200 p-6 md:p-10 shadow-sm min-h-[480px]"></div>
 
             <div class="mt-6 flex justify-center">
-                <button onclick="abandonar()" class="text-slate-400 hover:text-slate-900 transition-colors text-sm font-medium">
+                <button onclick="abandonar()" class="text-slate-400 hover:text-ludo-azul transition-colors text-sm font-medium">
                     Abandonar partida
                 </button>
             </div>
@@ -130,10 +153,10 @@
             </div>
             <div id="ranking-final" class="max-w-xl mx-auto space-y-3 mb-10"></div>
             <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                <button onclick="reiniciar()" class="flex-1 bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                <button onclick="reiniciar()" class="flex-1 bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
                     Jugar de nuevo
                 </button>
-                <a href="index.html" class="flex-1 text-center bg-white border border-slate-200 hover:border-slate-900 text-slate-900 font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                <a href="index.html" class="flex-1 text-center bg-white border border-slate-200 hover:border-ludo-azul text-slate-900 font-medium py-3 px-6 rounded-full text-sm transition-colors">
                     Volver al mazo
                 </a>
             </div>
@@ -155,7 +178,7 @@
             </div>
             <div id="modal-cartas-contenido" class="p-8 overflow-y-auto"></div>
             <div class="px-8 py-4 border-t border-slate-100 flex justify-end">
-                <button onclick="cerrarModalCartas()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-2.5 px-5 rounded-full text-sm transition-colors">
+                <button onclick="cerrarModalCartas()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-2.5 px-5 rounded-full text-sm transition-colors">
                     Volver a la partida
                 </button>
             </div>
@@ -235,17 +258,17 @@
         state.numJugadores = n;
         document.querySelectorAll('.num-jug-btn').forEach(b => {
             if (parseInt(b.dataset.n) === n) {
-                b.className = 'num-jug-btn w-12 h-12 rounded-full font-medium text-base transition-colors bg-slate-900 text-white';
+                b.className = 'num-jug-btn w-12 h-12 rounded-full font-medium text-base transition-colors bg-ludo-azul text-white';
             } else {
-                b.className = 'num-jug-btn w-12 h-12 rounded-full font-medium text-base transition-colors bg-white border border-slate-200 hover:border-slate-900 text-slate-900';
+                b.className = 'num-jug-btn w-12 h-12 rounded-full font-medium text-base transition-colors bg-white border border-slate-200 hover:border-ludo-azul text-slate-900';
             }
         });
         const div = document.getElementById('inputs-jugadores');
         div.innerHTML = Array.from({length: n}, (_, i) => `
             <div class="flex items-center gap-3">
-                <span class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-black text-sm flex items-center justify-center shrink-0">${i+1}</span>
+                <span class="w-8 h-8 rounded-full bg-ludo-cian/20 text-ludo-azul font-black text-sm flex items-center justify-center shrink-0">${i+1}</span>
                 <input type="text" id="jug-${i}" placeholder="Jugador ${i+1}" value="Jugador ${i+1}"
-                    class="flex-1 bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all">
+                    class="flex-1 bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold text-slate-800 focus:ring-2 focus:ring-ludo-azul focus:bg-white outline-none transition-all">
             </div>
         `).join('');
     }
@@ -291,7 +314,7 @@
         sb.innerHTML = state.jugadores.map((j, i) => {
             const activo = i === state.turnoActual;
             return `
-                <button onclick="verCartasJugador(${i})" class="flex items-center gap-2 px-4 py-2 rounded-full border transition-colors ${activo ? 'bg-slate-900 border-slate-900 text-white hover:bg-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-900'}" title="Ver cartas de ${j.nombre}">
+                <button onclick="verCartasJugador(${i})" class="flex items-center gap-2 px-4 py-2 rounded-full border transition-colors ${activo ? 'bg-ludo-azul border-ludo-azul text-white hover:bg-ludo-azul-dark' : 'bg-white border-slate-200 text-slate-600 hover:border-ludo-azul'}" title="Ver cartas de ${j.nombre}">
                     <span class="text-xs font-medium">${j.nombre}</span>
                     <span class="text-xs font-semibold tabular-nums ${activo ? 'bg-white/15' : 'bg-slate-100'} px-2 py-0.5 rounded-full">${j.cartas.length}</span>
                 </button>
@@ -392,7 +415,7 @@
                     <p class="text-slate-500 font-medium mb-8">
                         <span class="text-slate-900 font-semibold">${saltado.nombre}</span> pierde su turno por efecto de Censura.
                     </p>
-                    <button onclick="siguienteTurno()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    <button onclick="siguienteTurno()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
                         Siguiente jugador
                     </button>
                 </div>
@@ -409,7 +432,7 @@
             <div class="text-center py-12 fade-in">
                 <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4">Es el turno de</p>
                 <h3 class="text-4xl md:text-5xl font-black italic uppercase tracking-tighter mb-8 text-slate-950">${jug.nombre}</h3>
-                <button onclick="sacarCarta()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-8 rounded-full text-sm transition-colors">
+                <button onclick="sacarCarta()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-8 rounded-full text-sm transition-colors">
                     Sacar carta
                 </button>
                 <p class="mt-8 text-xs text-slate-400 font-medium">${state.pozo.length} carta(s) en el pozo</p>
@@ -467,7 +490,7 @@
                     <div class="border border-slate-200 rounded-2xl p-4">
                         <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-2">${label}</p>
                         <p class="text-slate-700 font-medium mb-3 text-sm">Dilo en voz alta. ¿Listo para ver la respuesta?</p>
-                        <button onclick="revelarRespuesta('${key}')" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-2 px-5 rounded-full text-sm transition-colors">
+                        <button onclick="revelarRespuesta('${key}')" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-2 px-5 rounded-full text-sm transition-colors">
                             Ver respuesta
                         </button>
                     </div>
@@ -534,13 +557,13 @@
         } else if (aciertos === 2) {
             jug.cartas.push(m);
             mensaje = `<span class="text-emerald-600">2 aciertos.</span> ${jug.nombre} gana la carta.`;
-            accion = `<button onclick="siguienteTurno()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">Siguiente jugador</button>`;
+            accion = `<button onclick="siguienteTurno()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">Siguiente jugador</button>`;
         } else if (aciertos === 1) {
             // Opción seguro vs riesgo
             mensaje = `<span class="text-amber-600">1 acierto.</span> ${jug.nombre} debe elegir:`;
             accion = `
                 <div class="flex flex-col sm:flex-row gap-3 justify-center max-w-xl mx-auto">
-                    <button onclick="opcionSeguro()" class="flex-1 bg-white border border-slate-200 hover:border-slate-900 text-slate-900 font-medium py-3 px-6 rounded-2xl text-sm transition-colors text-left">
+                    <button onclick="opcionSeguro()" class="flex-1 bg-white border border-slate-200 hover:border-ludo-azul text-slate-900 font-medium py-3 px-6 rounded-2xl text-sm transition-colors text-left">
                         <span class="block font-semibold mb-1">Opción segura</span>
                         <span class="block text-xs text-slate-500 font-normal">Carta al pozo, termina turno</span>
                     </button>
@@ -553,7 +576,7 @@
         } else {
             state.pozo.push(m);
             mensaje = `<span class="text-rose-600">0 aciertos.</span> La carta va al pozo.`;
-            accion = `<button onclick="siguienteTurno()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">Siguiente jugador</button>`;
+            accion = `<button onclick="siguienteTurno()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">Siguiente jugador</button>`;
         }
 
         const zona = document.getElementById('zona-accion');
@@ -606,7 +629,7 @@
             <div class="text-center py-10 fade-in">
                 <p class="text-xs text-amber-600 font-medium uppercase tracking-wider mb-3">Di tu respuesta en voz alta</p>
                 <h3 class="text-2xl font-black italic uppercase tracking-tighter mb-8">${labels[key]} de ${m.nombre}</h3>
-                <button onclick="verRespuestaRiesgo('${key}')" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                <button onclick="verRespuestaRiesgo('${key}')" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
                     Ver respuesta
                 </button>
             </div>
@@ -666,7 +689,7 @@
                 <p class="text-xs font-medium uppercase tracking-wider mb-2 ${colorClass}">Carta de truco</p>
                 <h3 class="text-4xl font-black italic uppercase tracking-tighter mb-2 text-slate-950">${t.tipo}</h3>
                 <p class="text-slate-600 font-medium mb-8 max-w-md mx-auto">${t.efecto}</p>
-                <button onclick="aplicarTruco()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                <button onclick="aplicarTruco()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
                     Aplicar efecto
                 </button>
             </div>
@@ -693,7 +716,7 @@
                         <p class="text-xs text-emerald-600 font-medium uppercase tracking-wider mb-4">Inspiración</p>
                         <h3 class="text-3xl font-black italic uppercase tracking-tighter mb-3">Mazo vacío</h3>
                         <p class="text-slate-600 mb-8 font-medium">Ya no quedan cartas en el mazo. Terminá el turno.</p>
-                        <button onclick="siguienteTurno()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                        <button onclick="siguienteTurno()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
                             Siguiente jugador
                         </button>
                     </div>
@@ -767,7 +790,7 @@
                         return `
                             <button onclick="intercambioSeleccionarPropia(${idx})" class="relative">
                                 <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
-                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border transition-all ${seleccionada ? 'border-sky-600 ring-4 ring-sky-300' : 'border-slate-200 hover:border-slate-900'}">
+                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border transition-all ${seleccionada ? 'border-sky-600 ring-4 ring-sky-300' : 'border-slate-200 hover:border-ludo-azul'}">
                                 ${seleccionada ? `<span class="absolute inset-0 bg-sky-600/25 rounded-xl"></span>` : ''}
                             </button>
                         `;
@@ -775,7 +798,7 @@
                 </div>
                 <div class="flex justify-center">
                     <button onclick="intercambioConfirmarEntrega()" ${listo ? '' : 'disabled'}
-                            class="${listo ? 'bg-slate-900 hover:bg-slate-700 text-white' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                            class="${listo ? 'bg-ludo-azul hover:bg-ludo-azul-dark text-white' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-medium py-3 px-6 rounded-full text-sm transition-colors">
                         Entregar y continuar
                     </button>
                 </div>
@@ -855,7 +878,7 @@
                         return `
                             <button onclick="intercambioElegirCarta(${idx})" class="relative">
                                 <img src="Set_Completo_60_Tarjetas_Mujeres/${c.id}.png" alt="${c.nombre}"
-                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border transition-all ${seleccionada ? 'border-sky-600 ring-4 ring-sky-300' : 'border-slate-200 hover:border-slate-900'}">
+                                     class="rounded-xl w-full aspect-[2/3] object-cover shadow border transition-all ${seleccionada ? 'border-sky-600 ring-4 ring-sky-300' : 'border-slate-200 hover:border-ludo-azul'}">
                                 ${seleccionada ? `
                                     <span class="absolute inset-0 bg-sky-600/25 rounded-xl"></span>
                                     <span class="absolute top-2 left-2 bg-sky-600 text-white font-semibold text-sm w-7 h-7 rounded-full flex items-center justify-center shadow-lg">${orden + 1}</span>
@@ -866,7 +889,7 @@
                 </div>
                 <div class="flex justify-center">
                     <button onclick="intercambioConfirmar()" ${listo ? '' : 'disabled'}
-                            class="${listo ? 'bg-slate-900 hover:bg-slate-700 text-white' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                            class="${listo ? 'bg-ludo-azul hover:bg-ludo-azul-dark text-white' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-medium py-3 px-6 rounded-full text-sm transition-colors">
                         Confirmar intercambio
                     </button>
                 </div>
@@ -907,7 +930,7 @@
         zona.innerHTML = `
             <div class="text-center py-12 fade-in">
                 <p class="text-slate-700 font-medium text-lg mb-8 max-w-xl mx-auto">${msg}</p>
-                <button onclick="siguienteTurno()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                <button onclick="siguienteTurno()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
                     Siguiente jugador
                 </button>
             </div>
@@ -943,7 +966,7 @@
                     <p class="text-slate-500 font-medium mb-8">
                         <span class="text-slate-900 font-semibold">${prox.nombre}</span> pierde el turno por el riesgo fallado anterior.
                     </p>
-                    <button onclick="avanzarTrasSkipRiesgo()" class="bg-slate-900 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
+                    <button onclick="avanzarTrasSkipRiesgo()" class="bg-ludo-azul hover:bg-ludo-azul-dark text-white font-medium py-3 px-6 rounded-full text-sm transition-colors">
                         Continuar
                     </button>
                 </div>
@@ -970,7 +993,7 @@
             const pos = i + 1;
             const destacado = j === ganador;
             return `
-                <div class="flex items-center justify-between p-5 rounded-2xl ${destacado ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200'}">
+                <div class="flex items-center justify-between p-5 rounded-2xl ${destacado ? 'bg-ludo-azul text-white' : 'bg-white border border-slate-200'}">
                     <div class="flex items-center gap-4">
                         <span class="text-sm font-medium ${destacado ? 'text-white/60' : 'text-slate-400'} tabular-nums">${String(pos).padStart(2, '0')}</span>
                         <span class="font-black italic uppercase tracking-tighter text-xl ${destacado ? '' : 'text-slate-950'}">${j.nombre}</span>
@@ -1008,5 +1031,13 @@
         document.body.innerHTML = '<div style="padding:40px;text-align:center;font-family:Inter,sans-serif"><h1>Error</h1><p>No se pudo cargar data/mujeres.json o data/trucos.json.</p><a href="index.html">← Volver al mazo</a></div>';
     });
     </script>
+
+    <footer class="max-w-[1100px] mx-auto px-6 md:px-10 py-10 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+        <a href="https://ludolab.cl" target="_blank" class="hover:opacity-80 transition-opacity flex items-center gap-3">
+            <img src="logo/logotipo.svg" alt="Ludolab" class="h-8">
+            <span class="text-slate-500 text-xs font-medium">Una experiencia de <span class="font-bold text-ludo-azul">Ludolab.cl</span></span>
+        </a>
+        <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Donde la curiosidad se convierte en conocimiento</p>
+    </footer>
 </body>
 </html>
